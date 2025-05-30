@@ -31,13 +31,56 @@ Font.register({
 
 interface ModernPDFProps {
   data: ResumeFormData;
-  contentHeight?: number;
 }
 
-const ModernPDF: React.FC<ModernPDFProps> = ({ data, contentHeight = 1000 }) => {
+const ModernPDF: React.FC<ModernPDFProps> = ({ data}) => {
+  // Calculate dynamic height based on content
+  const calculateHeight = () => {
+    let height = 100; // Base header height
+    
+    // Add height for summary
+    if (data.summary) height += 100;
+    
+    // Add height for experience
+    if (data.experience?.length > 0) {
+      height += 40; // Section title
+      height += data.experience.length * 120; // Approximate height per experience
+    }
+    
+    // Add height for education
+    if (data.education?.length > 0) {
+      height += 40; // Section title
+      height += data.education.length * 100; // Approximate height per education
+    }
+    
+    // Add height for skills
+    if (data.skills.programmingLanguages.length > 0 || data.skills.keywords.length > 0) {
+      height += 100;
+    }
+    
+    // Add height for projects
+    if (data.projects?.length > 0) {
+      height += 40; // Section title
+      height += data.projects.length * 120; // Approximate height per project
+    }
+    
+    // Add height for other sections
+    const languageCount = data.languages?.length ?? 0;
+    const interestCount = data.interests?.length ?? 0;
+    if (languageCount > 0) height += 40;
+    if (data.certifications?.length > 0) height += 40 + (data.certifications.length * 50);
+    if (data.awards?.length > 0) height += 40 + (data.awards.length * 50);
+    if (interestCount > 0) height += 60;
+    if (data.references?.length > 0) height += 40 + (data.references.length * 80);
+    
+    return Math.max(height, 400); // Minimum height
+  };
+
+  const dynamicHeight = calculateHeight();
+
   return (
     <Document>
-      <Page size={[612, contentHeight - 500]} style={[styles.page, styles.continuousPage]}>
+      <Page size={[612, dynamicHeight - 250]} style={[styles.page, styles.continuousPage]}>
         {/* Header Section with blue background */}
         <View style={styles.header}>
           <Text style={styles.headerName}>{data.personal.name}</Text>

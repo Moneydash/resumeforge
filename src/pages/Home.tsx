@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { FileText, Zap, Download, CheckCircle, ArrowRight, Users, Award, Briefcase } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { FileText, Zap, Download, CheckCircle, ArrowRight, Briefcase } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Home = () => {

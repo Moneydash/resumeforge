@@ -6,10 +6,9 @@ import styles from '../../styles/pdf/classic';
 
 interface ClassicPDFProps {
   data: ResumeFormData;
-  contentHeight: number;
 }
 
-const ClassicPDF: React.FC<ClassicPDFProps> = ({ data, contentHeight = 1000 }) => {
+const ClassicPDF: React.FC<ClassicPDFProps> = ({ data }) => {
   // Calculate dynamic height based on content
   const calculateHeight = () => {
     let height = 100; // Base header height

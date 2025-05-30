@@ -89,9 +89,9 @@ const Preview: React.FC = () => {
       
       // Use specialized templates for each template type
       if (selectedTemplate === 'modern') {
-        pdfDocument = <ModernPDF data={resumeData} contentHeight={contentHeight} />;
+        pdfDocument = <ModernPDF data={resumeData} />;
       } else if (selectedTemplate === 'classic') {
-        pdfDocument = <ClassicPDF data={resumeData} contentHeight={contentHeight} />;
+        pdfDocument = <ClassicPDF data={resumeData} />;
       } else if (selectedTemplate === 'creative') {
         pdfDocument = <CreativePDF data={resumeData} contentHeight={contentHeight} />;
       } else if (selectedTemplate === 'minimal') {
