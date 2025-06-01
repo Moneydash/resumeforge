@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
   page: {
     flexDirection: 'column',
     backgroundColor: '#FFFFFF',
-    fontFamily: 'Times-Roman',
+    fontFamily: 'Courier',
   },
   continuousPage: {
     padding: 0,
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   headerHeadline: {
-    fontSize: 20,
+    fontSize: 15,
     color: '#4B5563', // gray-600
     marginBottom: 10,
   },
@@ -53,11 +53,11 @@ const styles = StyleSheet.create({
   section: {
     marginLeft: 20,
     marginRight: 20,
-    marginBottom: 8
+    marginBottom: 10
   },
   sectionTitle: {
     fontSize: 15,
-    fontWeight: 'bold',
+    fontWeight: 'semibold',
     color: '#1F2937', // gray-800
     marginBottom: 3,
     paddingBottom: 3,
@@ -85,8 +85,8 @@ const styles = StyleSheet.create({
     color: '#1F2937', // gray-800
   },
   experienceDate: {
-    fontSize: 12,
-    color: '#6B7280', // gray-500
+    fontSize: 11,
+    color: '#1F2937', // gray-500
     backgroundColor: '#F3F4F6',
     padding: '2 6',
     borderRadius: 12,
@@ -133,6 +133,18 @@ const styles = StyleSheet.create({
   skillsList: {
     fontSize: 11,
     color: '#4B5563', // gray-600
+  },
+  skillsChipContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 5,
+  },
+  skillChip: {
+    fontSize: 11,
+    color: '#1F2937',
+    backgroundColor: '#F3F4F6',
+    padding: '2 6',
+    borderRadius: 12,
   },
   projectItem: {
     marginBottom: 12,

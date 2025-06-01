@@ -80,7 +80,7 @@ const ModernPDF: React.FC<ModernPDFProps> = ({ data}) => {
 
   return (
     <Document>
-      <Page size={[612, dynamicHeight - 250]} style={[styles.page, styles.continuousPage]}>
+      <Page size={[595.27, dynamicHeight - 250]} style={[styles.page, styles.continuousPage]}>
         {/* Header Section with blue background */}
         <View style={styles.header}>
           <Text style={styles.headerName}>{data.personal.name}</Text>

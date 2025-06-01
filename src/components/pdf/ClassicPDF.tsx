@@ -2,7 +2,7 @@ import React from 'react';
 import { Document, Page, Text, View, Link } from '@react-pdf/renderer';
 import type { ResumeFormData } from '../ResumeForm';
 import { formatDate } from '../../utils/helper';
-import styles from '../../styles/pdf/classic';
+import styles from '@/styles/pdf/classic';
 
 interface ClassicPDFProps {
   data: ResumeFormData;
@@ -14,12 +14,12 @@ const ClassicPDF: React.FC<ClassicPDFProps> = ({ data }) => {
     let height = 100; // Base header height
     
     // Add height for summary
-    if (data.summary) height += 70;
+    if (data.summary) height += 90;
     
     // Add height for experience
     if (data.experience?.length > 0) {
       height += 40; // Section title
-      height += data.experience.length * 120; // Approximate height per experience
+      height += data.experience.length * 130; // Approximate height per experience
     }
     
     // Add height for education
@@ -55,7 +55,7 @@ const ClassicPDF: React.FC<ClassicPDFProps> = ({ data }) => {
 
   return (
     <Document>
-      <Page size={[612, dynamicHeight - 100]} style={[styles.page, styles.continuousPage]}>
+      <Page size={[612, dynamicHeight]} style={[styles.page, styles.continuousPage]}>
         {/* Header Section with centered text */}
         <View style={styles.header}>
           <Text style={styles.headerName}>{data.personal.name}</Text>
@@ -151,22 +151,25 @@ const ClassicPDF: React.FC<ClassicPDFProps> = ({ data }) => {
         {(data.skills.programmingLanguages.length > 0 || data.skills.keywords.length > 0) && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Skills</Text>
-            
             {data.skills.programmingLanguages.length > 0 && (
               <View style={styles.skillsSection}>
                 <Text style={styles.skillsCategory}>Programming Languages</Text>
-                <Text style={styles.skillsList}>
-                  {data.skills.programmingLanguages.join(', ')}
-                </Text>
+                <View style={styles.skillsChipContainer}>
+                  {data.skills.programmingLanguages.map((skill, index) => (
+                    <Text key={index} style={styles.skillChip}>{skill}</Text>
+                  ))}
+                </View>
               </View>
             )}
             
             {data.skills.keywords.length > 0 && (
               <View style={styles.skillsSection}>
-                <Text style={styles.skillsCategory}>Keywords</Text>
-                <Text style={styles.skillsList}>
-                  {data.skills.keywords.join(', ')}
-                </Text>
+                <Text style={styles.skillsCategory}>Technologies & Frameworks</Text>
+                <View style={[styles.skillsChipContainer, { marginTop: 5 }]}>
+                  {data.skills.keywords.map((skill, index) => (
+                    <Text key={index} style={styles.skillChip}>{skill}</Text>
+                  ))}
+                </View>
               </View>
             )}
           </View>
@@ -187,10 +190,12 @@ const ClassicPDF: React.FC<ClassicPDFProps> = ({ data }) => {
                   <Text style={styles.text}>{project.description}</Text>
                 )}
                 {project.technologies && project.technologies.length > 0 && (
-                  <Text style={styles.text}>
-                    <Text style={{fontWeight: 'bold'}}>Technologies: </Text>
-                    {project.technologies.join(', ')}
-                  </Text>
+                  <View style={[styles.skillsChipContainer, { marginBottom: 3 }]}>
+                    <Text style={{fontWeight: 'bold', fontSize: 11}}>Technologies: </Text>
+                    {project.technologies.map((proj, i) => (
+                      <Text key={i} style={styles.skillChip}>{proj}</Text>
+                    ))}
+                  </View>
                 )}
               </View>
             ))}
@@ -201,9 +206,11 @@ const ClassicPDF: React.FC<ClassicPDFProps> = ({ data }) => {
         {data.languages && data.languages.length > 0 && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Languages</Text>
-            <Text style={styles.text}>
-              {data.languages.join(', ')}
-            </Text>
+            <View style={styles.skillsChipContainer}>
+              {data.languages.map((lang, i) => (
+                <Text key={i} style={styles.skillChip}>{lang}</Text>
+              ))}
+            </View>
           </View>
         )}
         
@@ -243,9 +250,11 @@ const ClassicPDF: React.FC<ClassicPDFProps> = ({ data }) => {
         {data.interests && data.interests.length > 0 && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Interests & Pursuits</Text>
-            <Text style={styles.text}>
-              {data.interests.join(', ')}
-            </Text>
+            <View style={styles.skillsChipContainer}>
+              {data.interests.map((interest, i) => (
+                <Text key={i} style={styles.skillChip}>{interest}</Text>
+              ))}
+            </View>
           </View>
         )}
         

@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   projectTitle: {
-    fontSize: 13,
+    fontSize: 11,
     fontWeight: 'bold',
     color: '#1F2937', // gray-800
     marginBottom: 3,
