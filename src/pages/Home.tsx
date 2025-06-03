@@ -137,12 +137,14 @@ const Home = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <button className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl font-semibold text-lg shadow-2xl hover:shadow-blue-500/25 transition-all duration-300 hover:scale-105">
-                <span className="flex items-center">
-                  <Briefcase className="w-5 h-5 mr-2" />
-                  Start Your Resume Now
-                </span>
-              </button>
+              <Link to="/templates">
+                <button className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl font-semibold text-lg shadow-2xl hover:shadow-blue-500/25 transition-all duration-300 hover:scale-105">
+                  <span className="flex items-center">
+                    <Briefcase className="w-5 h-5 mr-2" />
+                    Start Your Resume Now
+                  </span>
+                </button>
+              </Link>
               
               <div className="flex items-center text-gray-300">
                 <CheckCircle className="w-5 h-5 mr-2 text-green-400" />

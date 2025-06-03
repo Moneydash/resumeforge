@@ -88,7 +88,7 @@ const Templates: React.FC = () => {
     // Handle create new action - you can replace this with your routing logic
     toast("Redirecting to Executive Classic template!");
     setTimeout(() => {
-      navigate("/preview?templates=classic");
+      navigate("/preview?template=cigar");
     }, 3000);
   };
 

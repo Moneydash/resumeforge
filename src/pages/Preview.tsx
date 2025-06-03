@@ -15,6 +15,7 @@ import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 
 const Preview: React.FC = () => {
+  const [loading, setLoading] = useState(false);
   const layoutPluginInstance = defaultLayoutPlugin();
   const resumeRef = useRef<HTMLDivElement>(null);
   const { isDarkMode } = useTheme();
@@ -59,6 +60,7 @@ const Preview: React.FC = () => {
   });
 
   const handleFormSubmit = async (data: ResumeFormData) => {
+    setLoading(true);
     try {
       setResumeData(data);
       const requestData = await formRequest("POST", `/v1/api/pdf/${template}/generate`, data);
@@ -69,11 +71,14 @@ const Preview: React.FC = () => {
       console.log('PDF URL created:', url);
     } catch (error) {
       console.error("Error: ", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   // Generate a proper PDF with selectable text and clickable links
   const handleExportPDF = async (data: ResumeFormData) => {
+    setLoading(true);
     try {
       setResumeData(data);
       const requestData = await formRequest("POST", `/v1/api/pdf/${template}/export`, data);
@@ -84,6 +89,8 @@ const Preview: React.FC = () => {
       toast.success('PDF downloaded successfully!');
     } catch (error) {
       console.error("Error: ", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -134,7 +141,7 @@ const Preview: React.FC = () => {
           </div>
           
           <div className="p-4 lg:p-6 pt-0">
-            <ResumeForm onSubmit={handleFormSubmit} />
+            <ResumeForm onSubmit={handleFormSubmit} loading={loading} />
           </div>
         </div>
 
@@ -174,7 +181,7 @@ const Preview: React.FC = () => {
                   disabled:opacity-50 disabled:cursor-not-allowed
                 `}
               >
-                📃 Export to PDF
+                {loading ? "Exporting ..." : "📃 Export to PDF"}
               </button>
             </div>
           </div>

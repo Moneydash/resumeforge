@@ -6,11 +6,12 @@ import schema from '@/schema/schema';
 
 interface ResumeFormProps {
   onSubmit: (data: ResumeFormData) => void;
+  loading?: boolean;
 }
 
 const STORAGE_KEY = 'resumeFormData';
 
-const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
+const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit, loading = false }) => {
   // Load saved data from localStorage when component mounts
   useEffect(() => {
     const savedData = localStorage.getItem(STORAGE_KEY);
@@ -892,6 +893,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <div className="pt-6">
         <button
           type="submit"
+          disabled={loading}
           className={`
             w-full flex justify-center items-center gap-2 py-3 px-4 
             border border-transparent rounded-lg shadow-sm 
@@ -903,7 +905,17 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
             disabled:opacity-50 disabled:cursor-not-allowed
           `}
         >
-          💾 Save & Generate Resume
+          {loading ? (
+            <>
+              <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+              </svg>
+              Loading...
+            </>
+          ) : (
+            <>💾 Save & Generate Resume</>
+          )}
         </button>
       </div>
     </form>
