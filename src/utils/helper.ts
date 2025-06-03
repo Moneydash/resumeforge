@@ -22,3 +22,11 @@ export const formatDate = (dateString: string): string => {
     return dateString;
   }
 };
+
+export const stringToArray = (value: any): string[] => {
+  if (Array.isArray(value)) return value;
+  if (typeof value === 'string') {
+    return value.split(',').map(item => item.trim()).filter(item => item.length > 0);
+  }
+  return [];
+};

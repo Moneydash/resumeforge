@@ -1,22 +1,21 @@
 import React, { useState, useRef } from 'react';
-import { pdf } from '@react-pdf/renderer';
 import { saveAs } from 'file-saver';
 import ResumeForm from '../components/ResumeForm';
-import ResumePreview from '../components/ResumePreview';
-import ResumePDF from '../components/pdf/ResumePDF';
-import ModernPDF from '../components/pdf/ModernPDF';
-import ClassicPDF from '../components/pdf/ClassicPDF';
-import MinimalPDF from '../components/pdf/MinimalPDF';
 import { useTheme } from '../contexts/ThemeContext';
-import type { ResumeFormData } from '../components/ResumeForm';
-import type { TemplateType } from '../components/ResumePreview';
+import type { ResumeFormData } from '@/types/interface.resume-form-data';
+import type { TemplateType } from '@/types/types.template-types';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import ThemeToggle from '../components/ThemeToggle';
-import CreativePDF from '../components/pdf/CreativePDF';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { formRequest } from '@/api/request';
+import { Viewer, Worker } from '@react-pdf-viewer/core';
+import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
+import '@react-pdf-viewer/core/lib/styles/index.css';
+import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 
 const Preview: React.FC = () => {
+  const layoutPluginInstance = defaultLayoutPlugin();
   const resumeRef = useRef<HTMLDivElement>(null);
   const { isDarkMode } = useTheme();
   const [searchParams] = useSearchParams();
@@ -24,12 +23,13 @@ const Preview: React.FC = () => {
 
   // get the selected template and validate it
   const templateParam = searchParams.get("template");
-  const validTemplates: TemplateType[] = ['classic', 'modern', 'minimal', 'creative'];
+  const validTemplates: TemplateType[] = ['cigar', 'andromeda', 'comet', 'milky_way'];
   const template: TemplateType | undefined = templateParam && validTemplates.includes(templateParam as TemplateType)
     ? templateParam as TemplateType
     : undefined;
   
   // Properly typed initial state matching ResumeFormData interface
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [resumeData, setResumeData] = useState<ResumeFormData>({
     personal: {
       name: '',
@@ -58,61 +58,32 @@ const Preview: React.FC = () => {
     references: []
   });
 
-  const handleFormSubmit = (data: ResumeFormData) => {
-    setResumeData(data);
+  const handleFormSubmit = async (data: ResumeFormData) => {
+    try {
+      setResumeData(data);
+      const requestData = await formRequest("POST", `/v1/api/pdf/${template}/generate`, data);
+      // Convert the binary PDF data to a blob URL
+      const blob = new Blob([requestData?.data], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      setPdfUrl(url);
+      console.log('PDF URL created:', url);
+    } catch (error) {
+      console.error("Error: ", error);
+    }
   };
 
   // Generate a proper PDF with selectable text and clickable links
-  const handleExportPDF = async () => {
-    // Show loading state
-    const button = document.querySelector('#exportButton') as HTMLButtonElement;
-    if (button) {
-      button.textContent = '⏳ Generating PDF...';
-      button.disabled = true;
-    }
-    
+  const handleExportPDF = async (data: ResumeFormData) => {
     try {
-      // Measure the height of the resume preview
-      const resumeElement = resumeRef.current;
-      let contentHeight = 1000; // Default fallback height
-      
-      if (resumeElement) {
-        // Get the actual height of the resume content
-        contentHeight = Math.ceil(resumeElement.getBoundingClientRect().height);
-        // Add some padding to ensure all content fits
-        contentHeight += 50;
-      }
-      
-      // Create a blob from the appropriate PDF Component based on template
-      let pdfDocument;
-      const selectedTemplate = template || 'classic';
-      
-      // Use specialized templates for each template type
-      if (selectedTemplate === 'modern') {
-        pdfDocument = <ModernPDF data={resumeData} />;
-      } else if (selectedTemplate === 'classic') {
-        pdfDocument = <ClassicPDF data={resumeData} />;
-      } else if (selectedTemplate === 'creative') {
-        pdfDocument = <CreativePDF data={resumeData} contentHeight={contentHeight} />;
-      } else if (selectedTemplate === 'minimal') {
-        pdfDocument = <MinimalPDF data={resumeData} />;
-      } else {
-        pdfDocument = <ResumePDF data={resumeData} template={selectedTemplate} />;
-      }
-      
-      const blob = await pdf(pdfDocument).toBlob();
-      
-      // Use file-saver to save the blob
-      saveAs(blob, 'resume.pdf');
-      
+      setResumeData(data);
+      const requestData = await formRequest("POST", `/v1/api/pdf/${template}/export`, data);
+      // Convert the binary PDF data to a blob and trigger download
+      const blob = new Blob([requestData?.data], { type: 'application/pdf' });
+      const fileName = `${data.personal.name.toLowerCase().replace(/\s+/g, '_')}_resume.pdf`;
+      saveAs(blob, fileName);
+      toast.success('PDF downloaded successfully!');
     } catch (error) {
-      console.error('Error generating PDF:', error);
-      alert('Failed to generate PDF. Please try again.');
-    } finally {
-      if (button) {
-        button.textContent = '📃 Export to PDF';
-        button.disabled = false;
-      }
+      console.error("Error: ", error);
     }
   };
 
@@ -192,7 +163,7 @@ const Preview: React.FC = () => {
               </Button>
               <button
                 id="exportButton"
-                onClick={handleExportPDF}
+                onClick={() => handleExportPDF(resumeData)}
                 className={`
                   px-4 py-2 rounded-lg text-sm font-medium
                   transition-colors duration-200
@@ -228,7 +199,21 @@ const Preview: React.FC = () => {
                 color: isDarkMode ? '#ffffff' : '#000000'
               }}
             >
-              <ResumePreview data={resumeData} template={template || 'classic'} />
+              {/* <ResumePreview data={resumeData} template={template || 'classic'} /> */}
+              {pdfUrl ? (
+                <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
+                  <div style={{ height: '800px' }}>
+                    <Viewer 
+                      fileUrl={pdfUrl} 
+                      plugins={[layoutPluginInstance]} 
+                    />
+                  </div>
+                </Worker>
+              ) : (
+                <div className="text-center py-8">
+                  No PDF generated yet. Please submit the form.
+                </div>
+              )}
             </div>
           </div>
         </div>

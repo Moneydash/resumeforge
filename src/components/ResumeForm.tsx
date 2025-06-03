@@ -1,143 +1,8 @@
 import React, { useEffect } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-
-export interface ResumeFormData {
-  personal: {
-    name: string;
-    headline?: string;
-    email: string;
-    website: {
-      name: string;
-      link: string;
-    };
-    location?: string;
-  };
-  socials: {
-    linkedIn?: string;
-    github?: string;
-    twitter?: string;
-  };
-  summary?: string;
-  experience: Array<{
-    title: string;
-    company: string;
-    startDate: string;
-    endDate?: string;
-    description?: string;
-  }>;
-  education: Array<{
-    degree: string;
-    institution: string;
-    startDate: string;
-    endDate?: string;
-  }>;
-  skills: {
-    programmingLanguages: string[];
-    keywords: string[];
-  };
-  languages?: string[];
-  awards: Array<{
-    title: string;
-    date: string;
-    description?: string;
-  }>;
-  certifications: Array<{
-    name: string;
-    issuingOrganization: string;
-    date: string;
-  }>;
-  interests?: string[];
-  projects: Array<{
-    title: string;
-    description?: string;
-    technologies: string[];
-  }>;
-  references: Array<{
-    name: string;
-    title: string;
-    company: string;
-    email: string;
-    phone: string;
-  }>;
-}
-
-// Helper function to convert comma-separated string to array
-const stringToArray = (value: any): string[] => {
-  if (Array.isArray(value)) return value;
-  if (typeof value === 'string') {
-    return value.split(',').map(item => item.trim()).filter(item => item.length > 0);
-  }
-  return [];
-};
-
-const schema = yup.object({
-  personal: yup.object({
-    name: yup.string().required('Name is required'),
-    headline: yup.string(),
-    email: yup.string().email('Invalid email').required('Email is required'),
-    website: yup.object({
-      name: yup.string(),
-      link: yup.string().url('Invalid URL'),
-    }).required('Website is required'),
-    location: yup.string(),
-  }).required('Personal information is required'),
-  socials: yup.object({
-    linkedIn: yup.string().url('Invalid LinkedIn URL'),
-    github: yup.string().url('Invalid GitHub URL'),
-    twitter: yup.string().url('Invalid Twitter URL'),
-  }),
-  summary: yup.string(),
-  experience: yup.array().of(yup.object({
-    title: yup.string().required('Title is required'),
-    company: yup.string().required('Company is required'),
-    startDate: yup.string().required('Start date is required'),
-    endDate: yup.string(),
-    description: yup.string(),
-  })),
-  education: yup.array().of(yup.object({
-    degree: yup.string().required('Degree is required'),
-    institution: yup.string().required('Institution is required'),
-    startDate: yup.string().required('Start date is required'),
-    endDate: yup.string(),
-  })),
-  skills: yup.object({
-    programmingLanguages: yup.mixed().transform(stringToArray).test(
-      'min-length',
-      'At least one programming language is required',
-      (value) => {
-        if (!value) return false;
-        return Array.isArray(value) && value.length > 0;
-      }
-    ),
-    keywords: yup.mixed().transform(stringToArray),
-  }),
-  languages: yup.mixed().transform(stringToArray),
-  awards: yup.array().of(yup.object({
-    title: yup.string().required('Title is required'),
-    date: yup.string().required('Date is required'),
-    description: yup.string(),
-  })),
-  certifications: yup.array().of(yup.object({
-    name: yup.string().required('Name is required'),
-    issuingOrganization: yup.string().required('Organization is required'),
-    date: yup.string().required('Date is required'),
-  })),
-  interests: yup.mixed().transform(stringToArray),
-  projects: yup.array().of(yup.object({
-    title: yup.string().required('Title is required'),
-    description: yup.string(),
-    technologies: yup.mixed().transform(stringToArray),
-  })),
-  references: yup.array().of(yup.object({
-    name: yup.string().required('Name is required'),
-    title: yup.string().required('Title is required'),
-    company: yup.string().required('Company is required'),
-    email: yup.string().email('Invalid email').required('Email is required'),
-    phone: yup.string().matches(/^[0-9\-\+]+$/, 'Invalid phone number'),
-  })),
-}).required();
+import type { ResumeFormData } from '@/types/interface.resume-form-data';
+import schema from '@/schema/schema';
 
 interface ResumeFormProps {
   onSubmit: (data: ResumeFormData) => void;
@@ -533,10 +398,22 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
               <label className={labelClasses}>Description</label>
               <textarea
                 {...register(`experience.${index}.description`)}
-                rows={3}
+                rows={5}
                 className={inputClasses}
                 placeholder="Describe your responsibilities and achievements..."
+                style={{ whiteSpace: 'pre-wrap' }}
+                onBlur={(e) => {
+                  // Ensure newlines are preserved when the form is submitted
+                  const value = e.target.value;
+                  if (value) {
+                    // Update the form value directly to ensure newlines are preserved
+                    e.target.value = value.replace(/\n/g, '\n');
+                  }
+                }}
               />
+              <p className="text-xs text-gray-500 mt-1">
+                Press Enter for new lines. These will be preserved when generating your resume.
+              </p>
             </div>
           </div>
         ))}
@@ -1026,7 +903,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
             disabled:opacity-50 disabled:cursor-not-allowed
           `}
         >
-          💾 Save Resume
+          💾 Save & Generate Resume
         </button>
       </div>
     </form>

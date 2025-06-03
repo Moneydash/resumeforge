@@ -1,4 +1,4 @@
-import type { ResumeFormData } from "../components/ResumeForm";
+import type { ResumeFormData } from "./interface.resume-form-data";
 
 export interface TemplateProps {
   data: ResumeFormData;

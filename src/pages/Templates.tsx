@@ -14,7 +14,7 @@ interface Template {
 
 const templates: Template[] = [
   {
-    id: "classic",
+    id: "cigar",
     name: "Executive Classic",
     description: "A sophisticated template designed for senior professionals and executives seeking timeless elegance.",
     category: "Professional",
@@ -27,7 +27,7 @@ const templates: Template[] = [
     ]
   },
   {
-    id: "modern",
+    id: "andromeda",
     name: "Modern Professional",
     description: "Modern design that balances innovation with professionalism for today's dynamic workplace.",
     category: "Modern",
@@ -40,7 +40,7 @@ const templates: Template[] = [
     ]
   },
   {
-    id: "minimal",
+    id: "comet",
     name: "Executive Minimal",
     description: "Refined minimalism that lets your achievements speak loudly through sophisticated simplicity.",
     category: "Minimalist",
@@ -53,7 +53,7 @@ const templates: Template[] = [
     ]
   },
   {
-    id: "creative",
+    id: "milky_way",
     name: "Creative Professional",
     description: "Innovative design that showcases creativity while maintaining the professionalism employers expect.",
     category: "Creative",
