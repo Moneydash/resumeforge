@@ -11,6 +11,7 @@ export function Plugins() {
   const onRef = (_floatingAnchorElem: HTMLDivElement) => {
     if (_floatingAnchorElem !== null) {
       setFloatingAnchorElem(_floatingAnchorElem)
+      console.log(floatingAnchorElem);
     }
   }
 
