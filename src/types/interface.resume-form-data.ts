@@ -9,11 +9,11 @@ export interface ResumeFormData {
     };
     location?: string;
   };
-  socials: {
-    linkedIn?: string;
-    github?: string;
-    twitter?: string;
-  };
+  socials: Array<{
+    name: string;
+    link: string;
+    slug: string;
+  }>;
   summary?: string;
   experience: Array<{
     title: string;
@@ -28,10 +28,10 @@ export interface ResumeFormData {
     startDate: string;
     endDate?: string;
   }>;
-  skills: {
-    programmingLanguages: string[];
-    keywords: string[];
-  };
+  skills: Array<{
+    name: string,
+    keywords: string[]
+  }>;
   languages?: string[];
   awards: Array<{
     title: string;

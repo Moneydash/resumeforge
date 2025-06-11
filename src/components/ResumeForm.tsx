@@ -1,17 +1,42 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { ResumeFormData } from '@/types/interface.resume-form-data';
 import schema from '@/schema/schema';
+import { Input } from './ui/input';
+import { Button } from './ui/button';
+import { Label } from './ui/label';
+import { Textarea } from './ui/textarea';
+import SocialsFieldsComponent from './forms/Socials';
+import ExperienceFieldsComponent from './forms/Experience';
+import EducationFieldsComponent from './forms/Education';
+import SkillsFieldsComponent from './forms/Skills';
+import ProjectFieldsComponent from './forms/Projects';
+import AwardFieldsComponent from './forms/Awards';
+import CertificationFieldsComponent from './forms/Certifications';
+import ReferencesFieldsComponent from './forms/References';
+import PersonalFieldsComponent from './forms/Personal';
+import {
+  inputClasses,
+  labelClasses,
+  sectionDivClasses,
+  sectionHeaderClasses,
+  addButtonClasses,
+  removeButtonClasses,
+  cardClasses
+} from '@/styles/form-classes';
+import { SaveIcon } from 'lucide-react';
 
 interface ResumeFormProps {
   onSubmit: (data: ResumeFormData) => void;
   loading?: boolean;
+  template?: string;
 }
 
 const STORAGE_KEY = 'resumeFormData';
 
-const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit, loading = false }) => {
+const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit, template, loading = false, }) => {
+  const [loadingStep, setLoadingStep] = useState(0);
   // Load saved data from localStorage when component mounts
   useEffect(() => {
     const savedData = localStorage.getItem(STORAGE_KEY);
@@ -25,7 +50,39 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit, loading = false }) =>
       }
     }
   }, []);
-  const { register, handleSubmit, control, reset, formState: { errors } } = useForm<ResumeFormData>({
+
+  useEffect(() => {
+    let timers: NodeJS.Timeout[] = [];
+  
+    if (loading) {
+      setLoadingStep(0);
+      if (template === "andromeda") {
+        timers.push(setTimeout(() => setLoadingStep(1), 2000)); // After 2s: "Checking fonts ..."
+        timers.push(setTimeout(() => setLoadingStep(2), 2000 + 10000)); // After 10s: "Styling ..."
+        timers.push(setTimeout(() => setLoadingStep(3), 2000 + 10000 + 35000)); // After 47s: "Generating your resume..."
+        timers.push(setTimeout(() => setLoadingStep(4), 2000 + 10000 + 35000 + 10000)); // After 15s: "Almost there ..."
+      } else if (template === "cigar") {
+        timers.push(setTimeout(() => setLoadingStep(1), 2000)); // After 2s: "Checking fonts ..."
+        timers.push(setTimeout(() => setLoadingStep(2), 2000 + 5000)); // After 7s: "Styling ..."
+        timers.push(setTimeout(() => setLoadingStep(3), 2000 + 5000 + 8000)); // After 15s: "Generating your resume..."
+      } else if (template === "milky_way") {
+        timers.push(setTimeout(() => setLoadingStep(1), 2000)); // After 2s: "Checking fonts ..."
+        timers.push(setTimeout(() => setLoadingStep(2), 2000 + 7000)); // After 9s: "Styling ..."
+        timers.push(setTimeout(() => setLoadingStep(3), 2000 + 7000 + 3000)); // After 12s: "Generating your resume..."
+      } else {
+        timers.push(setTimeout(() => setLoadingStep(1), 800)); // After 2s: "Checking fonts ..."
+        timers.push(setTimeout(() => setLoadingStep(2), 800 + 950)); // After 4s: "Styling ..."
+        timers.push(setTimeout(() => setLoadingStep(3), 800 + 950 + 1000)); // After 4s: "Generating your resume..."
+      }
+    } else {
+      setLoadingStep(0); // Reset when not loading
+      timers.forEach(timer => clearTimeout(timer));
+    }
+  
+    return () => timers.forEach(timer => clearTimeout(timer));
+  }, [loading]);
+
+  const { register, handleSubmit, control, reset, formState: { errors }, setValue, watch } = useForm<ResumeFormData>({
     resolver: yupResolver(schema as any),
     defaultValues: {
       personal: {
@@ -35,13 +92,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit, loading = false }) =>
         website: { name: '', link: '' },
         location: ''
       },
-      socials: {
-        linkedIn: '',
-        github: '',
-        twitter: ''
-      },
       summary: '',
-      skills: { programmingLanguages: [], keywords: [] },
       languages: [],
       awards: [],
       certifications: [],
@@ -53,6 +104,16 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit, loading = false }) =>
     }
   });
 
+  const { fields: socialFields, append: appendSocial, remove: removeSocial } = useFieldArray({
+    control,
+    name: 'socials'
+  });
+
+  const { fields: skillsFields, append: appendSkill, remove: removeSkill } = useFieldArray({
+    control,
+    name: 'skills'
+  });
+  
   // Field arrays for dynamic sections
   const { fields: experienceFields, append: appendExperience, remove: removeExperience } = useFieldArray({
     control,
@@ -104,451 +165,101 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit, loading = false }) =>
     onSubmit(processedData);
   };
 
-  // Consistent styling classes
-  const inputClasses = `
-    mt-1 block w-full rounded-md border shadow-sm px-3 py-2
-    border-gray-300 dark:border-gray-600 
-    bg-white dark:bg-gray-700 
-    text-gray-900 dark:text-white
-    placeholder-gray-500 dark:placeholder-gray-400
-    focus:border-indigo-500 focus:ring-indigo-500 focus:ring-1
-    transition-colors duration-200
-  `;
-
-  const labelClasses = `
-    block text-sm font-medium mb-1
-    text-gray-700 dark:text-gray-300
-  `;
-
-  const sectionHeaderClasses = `
-    text-xl font-semibold mb-4 pb-2 border-b
-    text-gray-900 dark:text-white
-    border-gray-200 dark:border-gray-700
-  `;
-
-  const buttonClasses = `
-    inline-flex items-center px-3 py-2 border border-transparent text-sm 
-    leading-4 font-medium rounded-md focus:outline-none focus:ring-2 
-    focus:ring-offset-2 transition-colors duration-200
-  `;
-
-  const addButtonClasses = `
-    ${buttonClasses}
-    text-indigo-700 bg-indigo-100 hover:bg-indigo-200 
-    focus:ring-indigo-500 dark:bg-indigo-900 dark:text-indigo-200 
-    dark:hover:bg-indigo-800 dark:focus:ring-offset-gray-800
-  `;
-
-  const removeButtonClasses = `
-    ${buttonClasses}
-    text-red-700 bg-red-100 hover:bg-red-200 
-    focus:ring-red-500 dark:bg-red-900 dark:text-red-200 
-    dark:hover:bg-red-800 dark:focus:ring-offset-gray-800
-  `;
-
-  const cardClasses = `
-    p-4 border rounded-lg space-y-4
-    border-gray-200 dark:border-gray-700
-    bg-gray-50 dark:bg-gray-800
-  `;
-
   return (
     <form onSubmit={handleSubmit(handleSubmitForm)} className="space-y-8">
       {/* Personal Details */}
-      <div className="space-y-4">
-        <h2 className={sectionHeaderClasses}>Personal Details</h2>
-        <div className="grid grid-cols-1 gap-4">
-          <div>
-            <label htmlFor="name" className={labelClasses}>Full Name *</label>
-            <input
-              type="text"
-              id="name"
-              {...register('personal.name')}
-              className={inputClasses}
-              placeholder="Enter your full name"
-            />
-            {errors.personal?.name && (
-              <p className="text-red-500 dark:text-red-400 text-sm mt-1">
-                {errors.personal.name.message}
-              </p>
-            )}
-          </div>
-          
-          <div>
-            <label htmlFor="headline" className={labelClasses}>Professional Headline</label>
-            <input
-              type="text"
-              id="headline"
-              {...register('personal.headline')}
-              className={inputClasses}
-              placeholder="e.g., Senior Software Engineer"
-            />
-          </div>
-          
-          <div>
-            <label htmlFor="email" className={labelClasses}>Email *</label>
-            <input
-              type="email"
-              id="email"
-              {...register('personal.email')}
-              className={inputClasses}
-              placeholder="your.email@example.com"
-            />
-            {errors.personal?.email && (
-              <p className="text-red-500 dark:text-red-400 text-sm mt-1">
-                {errors.personal.email.message}
-              </p>
-            )}
-          </div>
-          
-          <div>
-            <label htmlFor="location" className={labelClasses}>Location</label>
-            <input
-              type="text"
-              id="location"
-              {...register('personal.location')}
-              className={inputClasses}
-              placeholder="City, Country"
-            />
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="websiteName" className={labelClasses}>Website Name</label>
-              <input
-                type="text"
-                id="websiteName"
-                {...register('personal.website.name')}
-                className={inputClasses}
-                placeholder="Portfolio"
-              />
-            </div>
-            <div>
-              <label htmlFor="websiteLink" className={labelClasses}>Website URL</label>
-              <input
-                type="url"
-                id="websiteLink"
-                {...register('personal.website.link')}
-                className={inputClasses}
-                placeholder="https://yourwebsite.com"
-              />
-              {errors.personal?.website?.link && (
-                <p className="text-red-500 dark:text-red-400 text-sm mt-1">
-                  {errors.personal.website.link.message}
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
+      <PersonalFieldsComponent
+        sectionHeaderClasses={sectionHeaderClasses}
+        sectionDivClasses={sectionDivClasses}
+        labelClasses={labelClasses}
+        register={register}
+        errors={errors}
+        inputClasses={inputClasses}
+      />
 
-      {/* Social Links */}
+      {/* Professional Summary Field */}
       <div className="space-y-4">
-        <h2 className={sectionHeaderClasses}>Social Links</h2>
-        <div className="grid grid-cols-1 gap-4">
-          <div>
-            <label htmlFor="linkedin" className={labelClasses}>LinkedIn</label>
-            <input
-              type="url"
-              id="linkedin"
-              {...register('socials.linkedIn')}
-              className={inputClasses}
-              placeholder="https://linkedin.com/in/yourprofile"
-            />
-            {errors.socials?.linkedIn && (
-              <p className="text-red-500 dark:text-red-400 text-sm mt-1">
-                {errors.socials.linkedIn.message}
-              </p>
-            )}
-          </div>
-          
-          <div>
-            <label htmlFor="github" className={labelClasses}>GitHub</label>
-            <input
-              type="url"
-              id="github"
-              {...register('socials.github')}
-              className={inputClasses}
-              placeholder="https://github.com/yourusername"
-            />
-            {errors.socials?.github && (
-              <p className="text-red-500 dark:text-red-400 text-sm mt-1">
-                {errors.socials.github.message}
-              </p>
-            )}
-          </div>
-          
-          <div>
-            <label htmlFor="twitter" className={labelClasses}>Twitter</label>
-            <input
-              type="url"
-              id="twitter"
-              {...register('socials.twitter')}
-              className={inputClasses}
-              placeholder="https://twitter.com/yourusername"
-            />
-            {errors.socials?.twitter && (
-              <p className="text-red-500 dark:text-red-400 text-sm mt-1">
-                {errors.socials.twitter.message}
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Professional Summary */}
-      <div className="space-y-4">
-        <h2 className={sectionHeaderClasses}>Professional Summary</h2>
+        <h2 className={`${sectionHeaderClasses} ${sectionDivClasses}`}>Summary</h2>
         <div>
-          <label htmlFor="summary" className={labelClasses}>Summary</label>
-          <textarea
+          <Label htmlFor="summary" className={labelClasses}>Summary</Label>
+          <Textarea
             id="summary"
             {...register('summary')}
-            rows={4}
-            className={inputClasses}
+            rows={10}
             placeholder="Write a brief professional summary highlighting your key achievements and skills..."
           />
         </div>
       </div>
 
-      {/* Experience */}
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <h2 className={sectionHeaderClasses}>Work Experience</h2>
-          <button
-            type="button"
-            onClick={() => appendExperience({ title: '', company: '', startDate: '', endDate: '', description: '' })}
-            className={addButtonClasses}
-          >
-            ➕ Add Experience
-          </button>
-        </div>
-        
-        {experienceFields.map((field, index) => (
-          <div key={field.id} className={cardClasses}>
-            <div className="flex justify-between items-start">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                Experience #{index + 1}
-              </h3>
-              <button
-                type="button"
-                onClick={() => removeExperience(index)}
-                className={removeButtonClasses}
-              >
-                🗑️ Remove
-              </button>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className={labelClasses}>Job Title *</label>
-                <input
-                  {...register(`experience.${index}.title`)}
-                  className={inputClasses}
-                  placeholder="Software Engineer"
-                />
-                {errors.experience?.[index]?.title && (
-                  <p className="text-red-500 dark:text-red-400 text-sm mt-1">
-                    {errors.experience[index]?.title?.message}
-                  </p>
-                )}
-              </div>
-              
-              <div>
-                <label className={labelClasses}>Company *</label>
-                <input
-                  {...register(`experience.${index}.company`)}
-                  className={inputClasses}
-                  placeholder="Company Name"
-                />
-                {errors.experience?.[index]?.company && (
-                  <p className="text-red-500 dark:text-red-400 text-sm mt-1">
-                    {errors.experience[index]?.company?.message}
-                  </p>
-                )}
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className={labelClasses}>Start Date *</label>
-                <input
-                  type="month"
-                  {...register(`experience.${index}.startDate`)}
-                  className={inputClasses}
-                />
-                {errors.experience?.[index]?.startDate && (
-                  <p className="text-red-500 dark:text-red-400 text-sm mt-1">
-                    {errors.experience[index]?.startDate?.message}
-                  </p>
-                )}
-              </div>
-              
-              <div>
-                <label className={labelClasses}>End Date</label>
-                <input
-                  type="month"
-                  {...register(`experience.${index}.endDate`)}
-                  className={inputClasses}
-                  placeholder="Leave empty if current position"
-                />
-              </div>
-            </div>
-            
-            <div>
-              <label className={labelClasses}>Description</label>
-              <textarea
-                {...register(`experience.${index}.description`)}
-                rows={5}
-                className={inputClasses}
-                placeholder="Describe your responsibilities and achievements..."
-                style={{ whiteSpace: 'pre-wrap' }}
-                onBlur={(e) => {
-                  // Ensure newlines are preserved when the form is submitted
-                  const value = e.target.value;
-                  if (value) {
-                    // Update the form value directly to ensure newlines are preserved
-                    e.target.value = value.replace(/\n/g, '\n');
-                  }
-                }}
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                Press Enter for new lines. These will be preserved when generating your resume.
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
+      {/* Social Links Fields */}
+      <SocialsFieldsComponent
+        sectionDivClasses={sectionDivClasses}
+        sectionHeaderClasses={sectionHeaderClasses}
+        appendSocial={appendSocial}
+        addButtonClasses={addButtonClasses}
+        socialFields={socialFields}
+        setValue={setValue}
+        control={control}
+        register={register}
+        removeSocial={removeSocial}
+      />
 
-      {/* Education */}
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <h2 className={sectionHeaderClasses}>Education</h2>
-          <button
-            type="button"
-            onClick={() => appendEducation({ degree: '', institution: '', startDate: '', endDate: '' })}
-            className={addButtonClasses}
-          >
-            ➕ Add Education
-          </button>
-        </div>
-        
-        {educationFields.map((field, index) => (
-          <div key={field.id} className={cardClasses}>
-            <div className="flex justify-between items-start">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                Education #{index + 1}
-              </h3>
-              <button
-                type="button"
-                onClick={() => removeEducation(index)}
-                className={removeButtonClasses}
-              >
-                🗑️ Remove
-              </button>
-            </div>
-            
-            <div className="grid grid-cols-1 gap-4">
-              <div>
-                <label className={labelClasses}>Degree *</label>
-                <input
-                  {...register(`education.${index}.degree`)}
-                  className={inputClasses}
-                  placeholder="Bachelor of Science in Computer Science"
-                />
-                {errors.education?.[index]?.degree && (
-                  <p className="text-red-500 dark:text-red-400 text-sm mt-1">
-                    {errors.education[index]?.degree?.message}
-                  </p>
-                )}
-              </div>
-              
-              <div>
-                <label className={labelClasses}>Institution *</label>
-                <input
-                  {...register(`education.${index}.institution`)}
-                  className={inputClasses}
-                  placeholder="University Name"
-                />
-                {errors.education?.[index]?.institution && (
-                  <p className="text-red-500 dark:text-red-400 text-sm mt-1">
-                    {errors.education[index]?.institution?.message}
-                  </p>
-                )}
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className={labelClasses}>Start Date *</label>
-                <input
-                  type="month"
-                  {...register(`education.${index}.startDate`)}
-                  className={inputClasses}
-                />
-                {errors.education?.[index]?.startDate && (
-                  <p className="text-red-500 dark:text-red-400 text-sm mt-1">
-                    {errors.education[index]?.startDate?.message}
-                  </p>
-                )}
-              </div>
-              
-              <div>
-                <label className={labelClasses}>End Date</label>
-                <input
-                  type="month"
-                  {...register(`education.${index}.endDate`)}
-                  className={inputClasses}
-                  placeholder="Leave empty if ongoing"
-                />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+      {/* Experience Fields */}
+      <ExperienceFieldsComponent
+        sectionDivClasses={sectionDivClasses}
+        sectionHeaderClasses={sectionHeaderClasses}
+        appendExperience={appendExperience}
+        addButtonClasses={addButtonClasses}
+        experienceFields={experienceFields}
+        cardClasses={cardClasses}
+        removeExperience={removeExperience}
+        inputClasses={inputClasses}
+        removeButtonClasses={removeButtonClasses}
+        register={register}
+        labelClasses={labelClasses}
+        errors={errors}
+        control={control}
+      />
+
+      {/* Education Fields */}
+      <EducationFieldsComponent
+        sectionDivClasses={sectionDivClasses}
+        sectionHeaderClasses={sectionHeaderClasses}
+        appendEducation={appendEducation}
+        addButtonClasses={addButtonClasses}
+        educationFields={educationFields}
+        cardClasses={cardClasses}
+        removeEducation={removeEducation}
+        removeButtonClasses={removeButtonClasses}
+        errors={errors}
+        register={register}
+        labelClasses={labelClasses}
+        inputClasses={inputClasses}
+        control={control}
+      />
 
       {/* Skills */}
-      <div className="space-y-4">
-        <h2 className={sectionHeaderClasses}>Skills</h2>
-        <div className="space-y-4">
-          <div>
-            <label htmlFor="programmingLanguages" className={labelClasses}>
-              Programming Languages *
-            </label>
-            <input
-              type="text"
-              id="programmingLanguages"
-              {...register('skills.programmingLanguages')}
-              className={inputClasses}
-              placeholder="JavaScript, Python, Java (separate with commas)"
-            />
-            {errors.skills?.programmingLanguages && (
-              <p className="text-red-500 dark:text-red-400 text-sm mt-1">
-                {errors.skills.programmingLanguages.message}
-              </p>
-            )}
-          </div>
-          
-          <div>
-            <label htmlFor="keywords" className={labelClasses}>Technical Keywords</label>
-            <input
-              type="text"
-              id="keywords"
-              {...register('skills.keywords')}
-              className={inputClasses}
-              placeholder="React, Node.js, Docker, AWS (separate with commas)"
-            />
-          </div>
-        </div>
-      </div>
+      <SkillsFieldsComponent
+        sectionDivClasses={sectionDivClasses}
+        sectionHeaderClasses={sectionHeaderClasses}
+        appendSkill={appendSkill}
+        addButtonClasses={addButtonClasses}
+        cardClasses={cardClasses}
+        skillsFields={skillsFields}
+        removeSkill={removeSkill}
+        removeButtonClasses={removeButtonClasses}
+        errors={errors}
+        register={register}
+        labelClasses={labelClasses}
+        inputClasses={inputClasses}
+      />
 
       {/* Languages */}
       <div className="space-y-4">
-        <h2 className={sectionHeaderClasses}>Languages</h2>
+        <h2 className={`${sectionHeaderClasses} ${sectionDivClasses}`}>Languages</h2>
         <div>
-          <label htmlFor="languages" className={labelClasses}>Spoken Languages</label>
-          <input
-            type="text"
+          <Label htmlFor="languages" className={labelClasses}>Spoken Languages</Label>
+          <Input
             id="languages"
             {...register('languages')}
             className={inputClasses}
@@ -559,10 +270,10 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit, loading = false }) =>
 
       {/* Interests */}
       <div className="space-y-4">
-        <h2 className={sectionHeaderClasses}>Interests & Hobbies</h2>
+        <h2 className={`${sectionHeaderClasses} ${sectionDivClasses}`}>Interests & Hobbies</h2>
         <div>
-          <label htmlFor="interests" className={labelClasses}>Interests</label>
-          <input
+          <Label htmlFor="interests" className={labelClasses}>Interests</Label>
+          <Input
             type="text"
             id="interests"
             {...register('interests')}
@@ -573,325 +284,75 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit, loading = false }) =>
       </div>
 
       {/* Projects */}
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <h2 className={sectionHeaderClasses}>Projects</h2>
-          <button
-            type="button"
-            onClick={() => appendProject({ title: '', description: '', technologies: [] })}
-            className={addButtonClasses}
-          >
-            ➕ Add Project
-          </button>
-        </div>
-        
-        {projectFields.map((field, index) => (
-          <div key={field.id} className={cardClasses}>
-            <div className="flex justify-between items-start">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                Project #{index + 1}
-              </h3>
-              <button
-                type="button"
-                onClick={() => removeProject(index)}
-                className={removeButtonClasses}
-              >
-                🗑️ Remove
-              </button>
-            </div>
-            
-            <div>
-              <label className={labelClasses}>Project Title *</label>
-              <input
-                {...register(`projects.${index}.title`)}
-                className={inputClasses}
-                placeholder="E-commerce Platform"
-              />
-              {errors.projects?.[index]?.title && (
-                <p className="text-red-500 dark:text-red-400 text-sm mt-1">
-                  {errors.projects[index]?.title?.message}
-                </p>
-              )}
-            </div>
-            
-            <div>
-              <label className={labelClasses}>Description</label>
-              <textarea
-                {...register(`projects.${index}.description`)}
-                rows={3}
-                className={inputClasses}
-                placeholder="Describe the project, your role, and key achievements..."
-              />
-            </div>
-            
-            <div>
-              <label className={labelClasses}>Technologies Used</label>
-              <input
-                {...register(`projects.${index}.technologies`)}
-                className={inputClasses}
-                placeholder="React, Node.js, MongoDB (separate with commas)"
-              />
-            </div>
-          </div>
-        ))}
-      </div>
+      <ProjectFieldsComponent
+        sectionDivClasses={sectionDivClasses}
+        sectionHeaderClasses={sectionHeaderClasses}
+        appendProject={appendProject}
+        addButtonClasses={addButtonClasses}
+        cardClasses={cardClasses}
+        projectFields={projectFields}
+        removeProject={removeProject}
+        removeButtonClasses={removeButtonClasses}
+        errors={errors}
+        register={register}
+        labelClasses={labelClasses}
+        inputClasses={inputClasses}
+      />
 
-      {/* Awards */}
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <h2 className={sectionHeaderClasses}>Awards & Achievements</h2>
-          <button
-            type="button"
-            onClick={() => appendAward({ title: '', date: '', description: '' })}
-            className={addButtonClasses}
-          >
-            ➕ Add Award
-          </button>
-        </div>
-        
-        {awardFields.map((field, index) => (
-          <div key={field.id} className={cardClasses}>
-            <div className="flex justify-between items-start">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                Award #{index + 1}
-              </h3>
-              <button
-                type="button"
-                onClick={() => removeAward(index)}
-                className={removeButtonClasses}
-              >
-                🗑️ Remove
-              </button>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className={labelClasses}>Award Title *</label>
-                <input
-                  {...register(`awards.${index}.title`)}
-                  className={inputClasses}
-                  placeholder="Employee of the Year"
-                />
-                {errors.awards?.[index]?.title && (
-                  <p className="text-red-500 dark:text-red-400 text-sm mt-1">
-                    {errors.awards[index]?.title?.message}
-                  </p>
-                )}
-              </div>
-              
-              <div>
-                <label className={labelClasses}>Date *</label>
-                <input
-                  type="month"
-                  {...register(`awards.${index}.date`)}
-                  className={inputClasses}
-                />
-                {errors.awards?.[index]?.date && (
-                  <p className="text-red-500 dark:text-red-400 text-sm mt-1">
-                    {errors.awards[index]?.date?.message}
-                  </p>
-                )}
-              </div>
-            </div>
-            
-            <div>
-              <label className={labelClasses}>Description</label>
-              <textarea
-                {...register(`awards.${index}.description`)}
-                rows={2}
-                className={inputClasses}
-                placeholder="Brief description of the award..."
-              />
-            </div>
-          </div>
-        ))}
-      </div>
+      {/* Awards Fields */}
+      <AwardFieldsComponent
+        sectionDivClasses={sectionDivClasses}
+        sectionHeaderClasses={sectionHeaderClasses}
+        appendAward={appendAward}
+        addButtonClasses={addButtonClasses}
+        awardFields={awardFields}
+        cardClasses={cardClasses}
+        removeAward={removeAward}
+        removeButtonClasses={removeButtonClasses}
+        inputClasses={inputClasses}
+        register={register}
+        labelClasses={labelClasses}
+        errors={errors}
+        control={control}
+      />
 
       {/* Certifications */}
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <h2 className={sectionHeaderClasses}>Certifications</h2>
-          <button
-            type="button"
-            onClick={() => appendCertification({ name: '', issuingOrganization: '', date: '' })}
-            className={addButtonClasses}
-          >
-            ➕ Add Certification
-          </button>
-        </div>
-        
-        {certificationFields.map((field, index) => (
-          <div key={field.id} className={cardClasses}>
-            <div className="flex justify-between items-start">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                Certification #{index + 1}
-              </h3>
-              <button
-                type="button"
-                onClick={() => removeCertification(index)}
-                className={removeButtonClasses}
-              >
-                🗑️ Remove
-              </button>
-            </div>
-            
-            <div className="grid grid-cols-1 gap-4">
-              <div>
-                <label className={labelClasses}>Certification Name *</label>
-                <input
-                  {...register(`certifications.${index}.name`)}
-                  className={inputClasses}
-                  placeholder="AWS Certified Solutions Architect"
-                />
-                {errors.certifications?.[index]?.name && (
-                  <p className="text-red-500 dark:text-red-400 text-sm mt-1">
-                    {errors.certifications[index]?.name?.message}
-                  </p>
-                )}
-              </div>
-              
-              <div>
-                <label className={labelClasses}>Issuing Organization *</label>
-                <input
-                  {...register(`certifications.${index}.issuingOrganization`)}
-                  className={inputClasses}
-                  placeholder="Amazon Web Services"
-                />
-                {errors.certifications?.[index]?.issuingOrganization && (
-                  <p className="text-red-500 dark:text-red-400 text-sm mt-1">
-                    {errors.certifications[index]?.issuingOrganization?.message}
-                  </p>
-                )}
-              </div>
-              
-              <div>
-                <label className={labelClasses}>Date Obtained *</label>
-                <input
-                  type="month"
-                  {...register(`certifications.${index}.date`)}
-                  className={inputClasses}
-                />
-                {errors.certifications?.[index]?.date && (
-                  <p className="text-red-500 dark:text-red-400 text-sm mt-1">
-                    {errors.certifications[index]?.date?.message}
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+      <CertificationFieldsComponent
+        sectionDivClasses={sectionDivClasses}
+        sectionHeaderClasses={sectionHeaderClasses}
+        appendCertification={appendCertification}
+        addButtonClasses={addButtonClasses}
+        certificationFields={certificationFields}
+        cardClasses={cardClasses}
+        removeCertification={removeCertification}
+        removeButtonClasses={removeButtonClasses}
+        errors={errors}
+        register={register}
+        labelClasses={labelClasses}
+        inputClasses={inputClasses}
+        watch={watch}
+        setValue={setValue}
+      />
 
       {/* References */}
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <h2 className={sectionHeaderClasses}>References</h2>
-          <button
-            type="button"
-            onClick={() => appendReference({ name: '', title: '', company: '', email: '', phone: '' })}
-            className={addButtonClasses}
-          >
-            ➕ Add Reference
-          </button>
-        </div>
-        
-        {referenceFields.map((field, index) => (
-          <div key={field.id} className={cardClasses}>
-            <div className="flex justify-between items-start">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                Reference #{index + 1}
-              </h3>
-              <button
-                type="button"
-                onClick={() => removeReference(index)}
-                className={removeButtonClasses}
-              >
-                🗑️ Remove
-              </button>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className={labelClasses}>Full Name *</label>
-                <input
-                  {...register(`references.${index}.name`)}
-                  className={inputClasses}
-                  placeholder="John Doe"
-                />
-                {errors.references?.[index]?.name && (
-                  <p className="text-red-500 dark:text-red-400 text-sm mt-1">
-                    {errors.references[index]?.name?.message}
-                  </p>
-                )}
-              </div>
-              
-              <div>
-                <label className={labelClasses}>Job Title *</label>
-                <input
-                  {...register(`references.${index}.title`)}
-                  className={inputClasses}
-                  placeholder="Senior Manager"
-                />
-                {errors.references?.[index]?.title && (
-                  <p className="text-red-500 dark:text-red-400 text-sm mt-1">
-                    {errors.references[index]?.title?.message}
-                  </p>
-                )}
-              </div>
-            </div>
-            
-            <div>
-              <label className={labelClasses}>Company *</label>
-              <input
-                {...register(`references.${index}.company`)}
-                className={inputClasses}
-                placeholder="Company Name"
-              />
-              {errors.references?.[index]?.company && (
-                <p className="text-red-500 dark:text-red-400 text-sm mt-1">
-                  {errors.references[index]?.company?.message}
-                </p>
-              )}
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className={labelClasses}>Email *</label>
-                <input
-                  type="email"
-                  {...register(`references.${index}.email`)}
-                  className={inputClasses}
-                  placeholder="john.doe@company.com"
-                />
-                {errors.references?.[index]?.email && (
-                  <p className="text-red-500 dark:text-red-400 text-sm mt-1">
-                    {errors.references[index]?.email?.message}
-                  </p>
-                )}
-              </div>
-              
-              <div>
-                <label className={labelClasses}>Phone *</label>
-                <input
-                  type="tel"
-                  {...register(`references.${index}.phone`)}
-                  className={inputClasses}
-                  placeholder="+1-234-567-8900"
-                />
-                {errors.references?.[index]?.phone && (
-                  <p className="text-red-500 dark:text-red-400 text-sm mt-1">
-                    {errors.references[index]?.phone?.message}
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+      <ReferencesFieldsComponent
+        sectionDivClasses={sectionDivClasses}
+        sectionHeaderClasses={sectionHeaderClasses}
+        appendReference={appendReference}
+        addButtonClasses={addButtonClasses}
+        cardClasses={cardClasses}
+        referenceFields={referenceFields}
+        removeReference={removeReference}
+        removeButtonClasses={removeButtonClasses}
+        errors={errors}
+        register={register}
+        labelClasses={labelClasses}
+        inputClasses={inputClasses}
+      />
 
       {/* Submit Button */}
       <div className="pt-6">
-        <button
+        <Button
           type="submit"
           disabled={loading}
           className={`
@@ -911,12 +372,16 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit, loading = false }) =>
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
               </svg>
-              Loading...
+              {loadingStep === 0 && "Saving ..."}
+              {loadingStep === 1 && "Checking fonts ..."}
+              {loadingStep === 2 && "Styling ..."}
+              {loadingStep === 3 && "Generating your resume ..."}
+              {loadingStep === 4 && "Almost there ..."}
             </>
           ) : (
-            <>💾 Save & Generate Resume</>
+            <><SaveIcon /> Save & Generate Resume</>
           )}
-        </button>
+        </Button>
       </div>
     </form>
   );
