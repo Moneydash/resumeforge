@@ -372,11 +372,11 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit, template, loading = f
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
               </svg>
-              {loadingStep === 0 && "Saving ..."}
-              {loadingStep === 1 && "Checking fonts ..."}
-              {loadingStep === 2 && "Styling ..."}
-              {loadingStep === 3 && "Generating your resume ..."}
-              {loadingStep === 4 && "Almost there ..."}
+              {loadingStep === 0 && "Saving your information..."}
+              {loadingStep === 1 && "Loading fonts for a polished look..."}
+              {loadingStep === 2 && "Applying elegant styles..."}
+              {loadingStep === 3 && "Creating your resume..."}
+              {loadingStep === 4 && "Wrapping things up..."}
             </>
           ) : (
             <><SaveIcon /> Save & Generate Resume</>
