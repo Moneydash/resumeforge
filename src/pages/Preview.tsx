@@ -4,7 +4,7 @@ import ResumeForm from '../components/ResumeForm';
 import { useTheme } from '../contexts/ThemeContext';
 import type { ResumeFormData } from '@/types/interface.resume-form-data';
 import type { TemplateType } from '@/types/types.template-types';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import ThemeToggle from '../components/ThemeToggle';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -20,12 +20,11 @@ const Preview: React.FC = () => {
   const [loadingExport, setLoadingExport] = useState(false);
   const layoutPluginInstance = defaultLayoutPlugin();
   const { isDarkMode } = useTheme();
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
   // get the selected template and validate it
-  const templateParam = searchParams.get("template");
-  const validTemplates: TemplateType[] = ['cigar', 'andromeda', 'comet', 'milky_way'];
+  const templateParam = localStorage.getItem("template") || 'cigar';
+  const validTemplates: TemplateType[] = ['cigar', 'andromeda', 'comet', 'milky_way', 'zeus', 'athena', 'apollo', 'artemis'];
   const template: TemplateType | undefined = templateParam && validTemplates.includes(templateParam as TemplateType)
     ? templateParam as TemplateType
     : undefined;
@@ -58,7 +57,7 @@ const Preview: React.FC = () => {
       setLoading(true);
       try {
         setResumeData(data);
-        const requestData = await formRequest("POST", `/galaxy/api/pdf/${template}/generate`, data);
+        const requestData = await formRequest("POST", `/api/pdf/${template}/generate`, data);
         const blob = new Blob([requestData?.data], { type: 'application/pdf' });
         const url = URL.createObjectURL(blob);
         setPdfUrl(url);

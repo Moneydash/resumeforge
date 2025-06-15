@@ -1,1 +1,1 @@
-export type TemplateType = 'cigar' | 'andromeda' | 'comet' | 'milky_way';
+export type TemplateType = 'cigar' | 'andromeda' | 'comet' | 'milky_way' | 'zeus' | 'athena' | 'apollo' | 'artemis';

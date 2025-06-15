@@ -50,7 +50,7 @@ const SocialsFieldsComponent: React.FC<socialFieldComponentInterface> = ({
     { name: 'LinkedIn', slug: 'linkedin' },
     { name: 'Github', slug: 'github' },
     { name: 'X / Twitter', slug: 'x-twitter' },
-    { name: 'StackOverflow', slug: 'stackoverflow' },
+    { name: 'StackOverflow', slug: 'stack-overflow' },
     { name: 'Instagram', slug: 'instagram' },
     { name: 'Reddit', slug: 'reddit' },
     { name: 'Tiktok', slug: 'tiktok' },
