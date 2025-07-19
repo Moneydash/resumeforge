@@ -1,0 +1,418 @@
+* {
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+body {
+  font-family: 'Roboto Slab', sans-serif !important;
+  color: #1a1a1a !important;
+  background: #f8f9fa !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.resume-container {
+  width: 100% !important;
+  background: #ffffff !important;
+  min-height: 100vh !important;
+}
+
+.resume-body {
+  display: table !important;
+  width: 100% !important;
+  min-height: 100vh !important;
+  table-layout: fixed !important;
+}
+
+.resume-left-section {
+  display: table-cell !important;
+  width: 65% !important;
+  vertical-align: top !important;
+  position: relative !important;
+}
+
+.resume-sidebar {
+  display: table-cell !important;
+  width: 35% !important;
+  background: #f0f2f5 !important;
+  padding: 20px !important;
+  vertical-align: top !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  height: 100vh !important;
+}
+
+.resume-header {
+  background: #2c3e50 !important;
+  padding: 30px 40px !important;
+  text-align: center !important;
+  color: #ffffff !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.resume-header-content {
+  width: 100% !important;
+}
+
+.resume-header-name {
+  font-family: 'Roboto Slab', sans-serif !important;
+  font-size: 2.2rem !important;
+  font-weight: bold !important;
+  letter-spacing: 0.02em !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+}
+
+.resume-header-title {
+  font-size: 1.1rem !important;
+  font-weight: normal !important;
+  letter-spacing: 0.03em !important;
+  margin-bottom: 15px !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+}
+
+.social-links {
+  display: inline-block !important;
+  text-align: center !important;
+  margin-top: 15px !important;
+}
+
+.social-links a {
+  color: #d4af37 !important;
+  font-size: 1.3rem !important;
+  text-decoration: none !important;
+  margin: 0 8px !important;
+  display: inline-block !important;
+}
+
+.resume-main-content {
+  padding: 25px 20px !important;
+  background: #ffffff !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.main-section {
+  margin-bottom: 20px !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.main-section:last-child {
+  margin-bottom: 0 !important;
+}
+
+.main-section-title {
+  font-family: 'Roboto Slab', sans-serif !important;
+  font-size: 1.2rem !important;
+  font-weight: bold !important;
+  color: #2c3e50 !important;
+  margin-bottom: 5px !important;
+  border-bottom: 2px solid #d4af37 !important;
+  padding-bottom: 5px !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.main-summary {
+  font-size: 0.95rem !important;
+  color: #4a4a4a !important;
+  line-height: 1.5 !important;
+  text-align: justify !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+}
+
+.main-exp-item {
+  margin-bottom: 15px !important;
+  padding-bottom: 10px !important;
+  border-bottom: 1px solid #e8eaed !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.main-exp-item:last-child {
+  border-bottom: none !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.main-exp-header {
+  margin-bottom: 12px !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.main-exp-left {
+  margin-bottom: 8px !important;
+}
+
+.main-exp-title {
+  font-weight: bold !important;
+  color: #2c3e50 !important;
+  font-size: 1.05rem !important;
+  margin-bottom: 4px !important;
+  line-height: 1.3 !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+}
+
+.main-exp-company {
+  font-size: 0.95rem !important;
+  color: #6c757d !important;
+  font-style: italic !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+}
+
+.main-exp-date {
+  font-size: 0.85rem !important;
+  color: #6c757d !important;
+  line-height: 1.3 !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.main-exp-desc {
+  font-size: 0.9rem !important;
+  color: #4a4a4a !important;
+  line-height: 1.5 !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+}
+
+.main-exp-desc ul {
+  margin: 8px 0 !important;
+  padding-left: 18px !important;
+}
+
+.main-exp-desc li {
+  margin-bottom: 6px !important;
+  line-height: 1.4 !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.sidebar-section {
+  margin-bottom: 25px !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.sidebar-section:last-child {
+  margin-bottom: 0 !important;
+}
+
+.sidebar-section-title {
+  font-family: 'Roboto Slab', sans-serif !important;
+  font-size: 1rem !important;
+  font-weight: bold !important;
+  color: #2c3e50 !important;
+  margin-bottom: 12px !important;
+  border-bottom: 2px solid #d4af37 !important;
+  padding-bottom: 4px !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.sidebar-contact {
+  margin-bottom: 0 !important;
+}
+
+.sidebar-contact-item {
+  display: block !important;
+  font-size: 0.85rem !important;
+  color: #2c3e50 !important;
+  margin-bottom: 10px !important;
+  line-height: 1.3 !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.sidebar-contact-item i {
+  color: #d4af37 !important;
+  width: 14px !important;
+  display: inline-block !important;
+  margin-right: 6px !important;
+}
+
+.sidebar-contact-item .contact-text,
+.sidebar-contact-item a {
+  color: #2c3e50 !important;
+  text-decoration: none !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.sidebar-edu-item {
+  margin-bottom: 18px !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.sidebar-edu-item:last-child {
+  margin-bottom: 0 !important;
+}
+
+.sidebar-edu-degree {
+  font-weight: bold !important;
+  color: #2c3e50 !important;
+  font-size: 0.9rem !important;
+  margin-bottom: 4px !important;
+  line-height: 1.3 !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+}
+
+.sidebar-edu-school {
+  font-size: 0.85rem !important;
+  color: #4a4a4a !important;
+  margin-bottom: 3px !important;
+  line-height: 1.3 !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+}
+
+.sidebar-edu-date {
+  font-size: 0.8rem !important;
+  color: #6c757d !important;
+  font-style: italic !important;
+  line-height: 1.3 !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.sidebar-skills {
+  line-height: 1.8 !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.skill-tag {
+  background: #2c3e50 !important;
+  color: #ffffff !important;
+  padding: 4px 8px !important;
+  border-radius: 12px !important;
+  font-size: 0.75rem !important;
+  font-weight: bold !important;
+  display: inline-block !important;
+  margin: 2px 4px 2px 0 !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.sidebar-project-item {
+  margin-bottom: 18px !important;
+  padding-bottom: 12px !important;
+  border-bottom: 1px solid #d4d6d8 !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.sidebar-project-item:last-child {
+  border-bottom: none !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.sidebar-project-title {
+  font-weight: bold !important;
+  color: #2c3e50 !important;
+  font-size: 0.9rem !important;
+  margin-bottom: 6px !important;
+  line-height: 1.3 !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+}
+
+.sidebar-project-desc {
+  font-size: 0.8rem !important;
+  color: #4a4a4a !important;
+  line-height: 1.4 !important;
+  margin-bottom: 6px !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+}
+
+.sidebar-project-tech {
+  font-size: 0.75rem !important;
+  color: #6c757d !important;
+  font-style: italic !important;
+  line-height: 1.3 !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.sidebar-cert-item {
+  margin-bottom: 18px !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.sidebar-cert-item:last-child {
+  margin-bottom: 0 !important;
+}
+
+.sidebar-cert-name {
+  font-weight: bold !important;
+  color: #2c3e50 !important;
+  font-size: 0.85rem !important;
+  margin-bottom: 4px !important;
+  line-height: 1.3 !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+}
+
+.sidebar-cert-org {
+  font-size: 0.8rem !important;
+  color: #4a4a4a !important;
+  margin-bottom: 3px !important;
+  line-height: 1.3 !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+}
+
+.sidebar-cert-date {
+  font-size: 0.75rem !important;
+  color: #6c757d !important;
+  font-style: italic !important;
+  line-height: 1.3 !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.sidebar-languages {
+  line-height: 1.8 !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.language-tag {
+  background: #2c3e50 !important;
+  color: #ffffff !important;
+  padding: 4px 8px !important;
+  border-radius: 12px !important;
+  font-size: 0.75rem !important;
+  font-weight: normal !important;
+  display: inline-block !important;
+  margin: 2px 4px 2px 0 !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}

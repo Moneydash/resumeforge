@@ -5,6 +5,7 @@ const schema = yup.object({
   personal: yup.object({
     name: yup.string().required('Name is required'),
     headline: yup.string().optional(),
+    contact_number: yup.string().required(),
     email: yup.string().email('Invalid email').required('Email is required'),
     website: yup.object({
       name: yup.string(),

@@ -2,6 +2,7 @@ export interface ResumeFormData {
   personal: {
     name: string;
     headline?: string;
+    contact_number: string;
     email: string;
     website: {
       name: string;
@@ -21,33 +22,39 @@ export interface ResumeFormData {
     startDate: string;
     endDate?: string;
     description?: string;
+    hidden?: boolean;
   }>;
   education: Array<{
     degree: string;
     institution: string;
     startDate: string;
     endDate?: string;
+    hidden?: boolean;
   }>;
   skills: Array<{
-    name: string,
-    keywords: string[]
+    name: string;
+    keywords: string[];
+    hidden?: boolean;
   }>;
   languages?: string[];
   awards: Array<{
     title: string;
     date: string;
     description?: string;
+    hidden?: boolean;
   }>;
   certifications: Array<{
     name: string;
     issuingOrganization: string;
     date: string;
+    hidden?: boolean;
   }>;
   interests?: string[];
   projects: Array<{
     title: string;
     description?: string;
     technologies: string[];
+    hidden?: boolean;
   }>;
   references: Array<{
     name: string;
@@ -55,5 +62,6 @@ export interface ResumeFormData {
     company: string;
     email: string;
     phone: string;
+    hidden?: boolean;
   }>;
 }

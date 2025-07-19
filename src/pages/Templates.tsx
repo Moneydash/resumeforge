@@ -1,172 +1,10 @@
+import client from "@/api/axiosInstance";
 import TemplateCard from "@/components/TemplateCard";
-import type { Template } from "@/types/interface.template-card";
-import React, { useState } from "react";
+import templates from "@/utils/templates-type";
+import Cookies from "js-cookie";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const templates: Template[] = [
-  // Galaxy Collection
-  {
-    id: "cigar",
-    name: "Executive Classic",
-    description: "A sophisticated template designed for senior professionals and executives seeking timeless elegance.",
-    category: "Professional",
-    theme: "galaxy",
-    color: "from-slate-600 to-slate-800",
-    icon: "⭐",
-    available: true,
-    features: [
-      "Executive-level formatting",
-      "Professional typography",
-      "Clean organizational structure",
-      "ATS-optimized layout"
-    ]
-  },
-  {
-    id: "andromeda",
-    name: "Modern Professional",
-    description: "Modern design that balances innovation with professionalism for today's dynamic and fastpace workplace.",
-    category: "Modern",
-    theme: "galaxy",
-    color: "from-blue-600 to-blue-800",
-    icon: "🌌",
-    available: true,
-    features: [
-      "Modern visual hierarchy",
-      "Strategic white space usage",
-      "Professional accent elements",
-      "Mobile-responsive design"
-    ]
-  },
-  {
-    id: "comet",
-    name: "Executive Minimal",
-    description: "Refined minimalism that lets your achievements speak loudly through sophisticated simplicity.",
-    category: "Minimalist",
-    theme: "galaxy",
-    color: "from-gray-700 to-gray-900",
-    icon: "☄️",
-    available: true,
-    features: [
-      "Sophisticated simplicity",
-      "Premium typography",
-      "Strategic content focus",
-      "Elegant spacing"
-    ]
-  },
-  {
-    id: "milky_way",
-    name: "Creative Professional",
-    description: "Innovative design that showcases creativity while maintaining the professionalism employers expect.",
-    category: "Creative",
-    theme: "galaxy",
-    color: "from-purple-600 to-purple-800",
-    icon: "🌠",
-    available: true,
-    features: [
-      "Creative visual elements",
-      "Professional presentation",
-      "Unique layout design",
-      "Industry-appropriate styling"
-    ]
-  },
-  // Greek Gods Collection
-  {
-    id: "zeus",
-    name: "Zeus Executive",
-    description: "Command authority and respect with this powerful template designed for C-suite executives and industry leaders.",
-    category: "Executive",
-    theme: "greek",
-    color: "from-amber-600 to-yellow-700",
-    icon: "⚡",
-    available: true,
-    features: [
-      "Commanding presence layout",
-      "Leadership-focused sections",
-      "Executive board presentation ready",
-      "Premium gold accents"
-    ]
-  },
-  {
-    id: "athena",
-    name: "Athena Strategic",
-    description: "Showcase your strategic thinking and wisdom with this intellectually sophisticated design for consultants and analysts.",
-    category: "Strategic",
-    theme: "greek",
-    color: "from-emerald-600 to-teal-700",
-    icon: "🦉",
-    available: true,
-    features: [
-      "Strategic framework layout",
-      "Analytics-focused sections",
-      "Consultant-grade formatting",
-      "Wisdom-inspired typography"
-    ]
-  },
-  {
-    id: "apollo",
-    name: "Apollo Creative",
-    description: "Illuminate your creative talents with this inspiring template perfect for artists, designers, and creative professionals.",
-    category: "Creative",
-    theme: "greek",
-    color: "from-orange-500 to-red-600",
-    icon: "🎭",
-    available: true,
-    features: [
-      "Creative portfolio integration",
-      "Artistic visual hierarchy",
-      "Performance-oriented sections",
-      "Inspiration-driven design"
-    ]
-  },
-  {
-    id: "artemis",
-    name: "Artemis Focused",
-    description: "Sharp, precise, and goal-oriented design for professionals who value accuracy and targeted achievements.",
-    category: "Focused",
-    theme: "greek",
-    color: "from-indigo-600 to-purple-700",
-    icon: "🏹",
-    available: true,
-    features: [
-      "Goal-oriented structure",
-      "Achievement-focused layout",
-      "Precision formatting",
-      "Target-driven sections"
-    ]
-  },
-  {
-    id: "hermes",
-    name: "Hermes Dynamic",
-    description: "Fast-paced and versatile template for sales professionals, entrepreneurs, and dynamic business leaders.",
-    category: "Dynamic",
-    theme: "greek",
-    color: "from-cyan-500 to-blue-600",
-    icon: "🪶",
-    available: false,
-    features: [
-      "Dynamic content flow",
-      "Sales-oriented metrics",
-      "Entrepreneurial sections",
-      "Quick-scan formatting"
-    ]
-  },
-  {
-    id: "hera",
-    name: "Hera Elegant",
-    description: "Sophisticated elegance for senior management and executive positions requiring refined presentation.",
-    category: "Elegant",
-    theme: "greek",
-    color: "from-rose-500 to-pink-600",
-    icon: "👑",
-    available: false,
-    features: [
-      "Elegant sophistication",
-      "Management-focused layout",
-      "Refined visual elements",
-      "Executive presence design"
-    ]
-  }
-];
+import { toast } from "sonner";
 
 const Templates: React.FC = () => {
   const navigate = useNavigate();
@@ -175,38 +13,45 @@ const Templates: React.FC = () => {
   const [notification, setNotification] = useState<string>("");
 
   const themes = ["All", "Galaxy Collection", "Greek Gods Collection"];
-  
+
   const filteredTemplates = templates.filter(template => {
-    const matchesTheme = selectedTheme === "All" || 
+    const matchesTheme = selectedTheme === "All" ||
       (selectedTheme === "Galaxy Collection" && template.theme === "galaxy") ||
       (selectedTheme === "Greek Gods Collection" && template.theme === "greek");
     return matchesTheme;
   });
 
-  const showNotification = (message: string) => {
-    setNotification(message);
-    setTimeout(() => setNotification(""), 3000);
-  };
+  const fetchResumeData = async () => {
+    const userId = Cookies.get('user.id');
+    const request = await client.get(`/resume/fetch-data/${userId}`, { withCredentials: true });
+    localStorage.setItem('resumeFormData', request.data?.resume_data);
+  }
+
+  useEffect(() => {
+    fetchResumeData();
+  });
 
   const handleTemplateSelect = (templateId: string) => {
     const template = templates.find(t => t.id === templateId);
-    
+
     // Check if template is available
     if (!template?.available) {
-      showNotification(`"${template?.name}" template is not available yet. Coming soon!`);
+      toast.error(`"${template?.name}" template is not available yet. Coming soon!`);
       return;
     }
-    
-    showNotification(`Redirecting to "${template?.name}" template!`);
+
+    const toastRedirect = toast.loading(`Redirecting to "${template?.name}" template!`);
     setTimeout(() => {
+      toast.dismiss(toastRedirect);
       localStorage.setItem("template", templateId);
       navigate(`/preview?template=${templateId}`);
-    }, 2000);
+    }, 1500);
   };
 
   const handleCreateNew = () => {
-    showNotification("Starting with our most popular template!");
+    const zeusToast = toast.loading("Starting with our most popular template!");
     setTimeout(() => {
+      toast.dismiss(zeusToast);
       localStorage.setItem("template", "zeus");
       navigate("/preview?template=zeus");
     }, 2000);
@@ -237,7 +82,7 @@ const Templates: React.FC = () => {
               Professional Resume Templates
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-4xl mx-auto leading-relaxed">
-              Choose from our <strong>Galaxy Collection</strong> of modern classics or our new <strong>Greek Gods Collection</strong> 
+              Choose from our <strong>Galaxy Collection</strong> of modern classics or our new <strong>Greek Gods Collection</strong>
               inspired by legendary power and wisdom. Each template is crafted to help you make an unforgettable impression.
             </p>
           </div>
@@ -255,11 +100,10 @@ const Templates: React.FC = () => {
                 <button
                   key={theme}
                   onClick={() => setSelectedTheme(theme)}
-                  className={`px-6 py-3 rounded-xl font-medium transition-all duration-300 ${
-                    selectedTheme === theme
-                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg transform scale-105'
-                      : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
-                  }`}
+                  className={`px-6 py-3 rounded-xl font-medium transition-all duration-300 ${selectedTheme === theme
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg transform scale-105'
+                    : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
+                    }`}
                 >
                   {theme}
                 </button>
@@ -351,12 +195,12 @@ const Templates: React.FC = () => {
                 Join the Growing Community Turning Resumes Into Dream Careers
               </h2>
               <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto leading-relaxed">
-                Whether you choose the timeless elegance of our Galaxy Collection or the commanding presence of our Greek Gods Collection, 
+                Whether you choose the timeless elegance of our Galaxy Collection or the commanding presence of our Greek Gods Collection,
                 you'll have everything you need to stand out from the competition.
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-                <button 
+                <button
                   onClick={handleCreateNew}
                   className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-xl hover:from-blue-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-xl"
                 >
@@ -366,7 +210,7 @@ const Templates: React.FC = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
                 </button>
-                
+
                 <div className="flex items-center text-gray-500">
                   <span className="text-sm">or browse all templates above</span>
                 </div>

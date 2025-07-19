@@ -40,7 +40,7 @@ const PersonalFieldsComponent: React.FC<PersonalFieldInterface> = ({
             </p>
           )}
         </div>
-        
+
         <div>
           <Label htmlFor="headline" className={labelClasses}>Professional Headline</Label>
           <Input
@@ -51,7 +51,7 @@ const PersonalFieldsComponent: React.FC<PersonalFieldInterface> = ({
             placeholder="e.g., Senior Software Engineer"
           />
         </div>
-        
+
         <div>
           <Label htmlFor="email" className={labelClasses}>Email *</Label>
           <Input
@@ -67,7 +67,7 @@ const PersonalFieldsComponent: React.FC<PersonalFieldInterface> = ({
             </p>
           )}
         </div>
-        
+
         <div>
           <Label htmlFor="location" className={labelClasses}>Location</Label>
           <Input
@@ -78,7 +78,18 @@ const PersonalFieldsComponent: React.FC<PersonalFieldInterface> = ({
             placeholder="City, Country"
           />
         </div>
-        
+
+        <div>
+          <Label htmlFor="contact_number" className={labelClasses}>Phone Number</Label>
+          <Input
+            type="text"
+            id="contact_number"
+            {...register('personal.contact_number')}
+            className={inputClasses}
+            placeholder="Phone Number"
+          />
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Label htmlFor="websiteName" className={labelClasses}>Website Name</Label>

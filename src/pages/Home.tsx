@@ -57,13 +57,13 @@ const Home = () => {
               <span className="text-xl font-semibold text-gray-900">ResumeForge</span>
             </div>
             <div className="hidden md:flex items-center space-x-8">
-              <button 
-                onClick={() => scrollToSection('features')} 
+              <button
+                onClick={() => scrollToSection('features')}
                 className="text-gray-600 hover:text-gray-900 transition-colors font-medium"
               >
                 Features
               </button>
-              <Link to="/templates">
+              <Link to="/login">
                 <button className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-medium">
                   Get Started
                 </button>
@@ -82,21 +82,21 @@ const Home = () => {
                 <Star className="w-4 h-4 mr-2" />
                 Professional Resume Builder
               </div>
-              
+
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
                 Craft Resumes That
                 <span className="block bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent">
                   Open Doors
                 </span>
               </h1>
-              
+
               <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
-                Build stunning, ATS-optimized resumes with our professional templates. 
+                Build stunning, ATS-optimized resumes with our professional templates.
                 Stand out from the crowd and land your dream job.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-                <Link to="/templates">
+                <Link to="/login">
                   <button className="group px-8 py-4 bg-gray-900 text-white rounded-xl font-semibold hover:bg-gray-800 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
                     <span className="flex items-center">
                       Start Building Now
@@ -104,8 +104,8 @@ const Home = () => {
                     </span>
                   </button>
                 </Link>
-                
-                <button 
+
+                <button
                   onClick={() => scrollToSection('features')}
                   className="px-8 py-4 border-2 border-gray-200 text-gray-700 rounded-xl font-semibold hover:border-gray-300 hover:bg-gray-50 transition-all duration-300"
                 >
@@ -146,11 +146,10 @@ const Home = () => {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <div 
+              <div
                 key={index}
-                className={`relative p-6 bg-white rounded-2xl shadow-sm border border-gray-100 transition-all duration-500 hover:shadow-lg hover:-translate-y-1 ${
-                  activeFeature === index ? 'ring-2 ring-blue-500/20 shadow-lg' : ''
-                }`}
+                className={`relative p-6 bg-white rounded-2xl shadow-sm border border-gray-100 transition-all duration-500 hover:shadow-lg hover:-translate-y-1 ${activeFeature === index ? 'ring-2 ring-blue-500/20 shadow-lg' : ''
+                  }`}
               >
                 <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-violet-500 rounded-xl flex items-center justify-center mb-4 text-white">
                   {feature.icon}
@@ -173,12 +172,12 @@ const Home = () => {
                 Ready to Transform Your Career?
               </h2>
               <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
-                Create a professional resume that showcases your skills and experience. 
+                Create a professional resume that showcases your skills and experience.
                 Start building your future today.
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <Link to="/templates">
+                <Link to="/login">
                   <button className="group px-8 py-4 bg-white text-gray-900 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 hover:scale-105 shadow-lg">
                     <span className="flex items-center">
                       <Briefcase className="w-5 h-5 mr-2" />
@@ -186,7 +185,7 @@ const Home = () => {
                     </span>
                   </button>
                 </Link>
-                
+
                 <div className="flex items-center text-gray-300">
                   <CheckCircle className="w-5 h-5 mr-2 text-green-400" />
                   <span>Free to start</span>

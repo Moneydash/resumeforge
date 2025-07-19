@@ -31,29 +31,135 @@ interface ResumeFormProps {
   onSubmit: (data: ResumeFormData) => void;
   loading?: boolean;
   template?: string;
+  sectionRefs?: {
+    personalRef: React.RefObject<HTMLDivElement>;
+    summaryRef: React.RefObject<HTMLDivElement>;
+    socialsRef: React.RefObject<HTMLDivElement>;
+    experienceRef: React.RefObject<HTMLDivElement>;
+    educationRef: React.RefObject<HTMLDivElement>;
+    skillsRef: React.RefObject<HTMLDivElement>;
+    languagesRef: React.RefObject<HTMLDivElement>;
+    interestsRef: React.RefObject<HTMLDivElement>;
+    projectsRef: React.RefObject<HTMLDivElement>;
+    awardsRef: React.RefObject<HTMLDivElement>;
+    certificationsRef: React.RefObject<HTMLDivElement>;
+    referencesRef: React.RefObject<HTMLDivElement>;
+  };
 }
 
 const STORAGE_KEY = 'resumeFormData';
 
-const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit, template, loading = false, }) => {
+const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit, template, loading = false, sectionRefs }) => {
   const [loadingStep, setLoadingStep] = useState(0);
+
+  const { register, handleSubmit, control, reset, formState: { errors }, setValue, watch } = useForm<ResumeFormData>({
+    resolver: yupResolver(schema as any),
+    defaultValues: {
+      personal: {
+        name: '',
+        headline: '',
+        email: '',
+        website: { name: '', link: '' },
+        location: '',
+        contact_number: ''
+      },
+      socials: [], // Initialize as empty array
+      summary: '',
+      skills: [], // Initialize as empty array
+      languages: [],
+      awards: [],
+      certifications: [],
+      interests: [],
+      experience: [],
+      education: [],
+      projects: [],
+      references: []
+    }
+  });
+
+  // Field arrays for dynamic sections
+  const { fields: socialFields, append: appendSocial, remove: removeSocial } = useFieldArray({
+    control,
+    name: 'socials'
+  });
+
+  const { fields: skillsFields, append: appendSkill, remove: removeSkill, move: moveSkill } = useFieldArray({
+    control,
+    name: 'skills'
+  });
+
+  const { fields: experienceFields, append: appendExperience, remove: removeExperience, move: moveExperience } = useFieldArray({
+    control,
+    name: 'experience'
+  });
+
+  const { fields: educationFields, append: appendEducation, remove: removeEducation, move: moveEducation } = useFieldArray({
+    control,
+    name: 'education'
+  });
+
+  const { fields: projectFields, append: appendProject, remove: removeProject, move: moveProject } = useFieldArray({
+    control,
+    name: 'projects'
+  });
+
+  const { fields: awardFields, append: appendAward, remove: removeAward, move: moveAward } = useFieldArray({
+    control,
+    name: 'awards'
+  });
+
+  const { fields: certificationFields, append: appendCertification, remove: removeCertification, move: moveCertification } = useFieldArray({
+    control,
+    name: 'certifications'
+  });
+
+  const { fields: referenceFields, append: appendReference, remove: removeReference, move: moveReference } = useFieldArray({
+    control,
+    name: 'references'
+  });
+
   // Load saved data from localStorage when component mounts
   useEffect(() => {
     const savedData = localStorage.getItem(STORAGE_KEY);
     if (savedData) {
       try {
         const parsedData = JSON.parse(savedData);
+
+        // Ensure all arrays exist in the parsed data
+        const completeData = {
+          personal: {
+            name: '',
+            headline: '',
+            email: '',
+            website: { name: '', link: '' },
+            location: '',
+            contact_number: '',
+          },
+          socials: [],
+          summary: '',
+          skills: [],
+          languages: [],
+          awards: [],
+          certifications: [],
+          interests: [],
+          experience: [],
+          education: [],
+          projects: [],
+          references: [],
+          ...parsedData
+        };
+
         // Reset the form with saved data
-        reset(parsedData);
+        reset(completeData);
       } catch (error) {
         console.error('Error parsing saved resume data:', error);
       }
     }
-  }, []);
+  }, [reset]);
 
   useEffect(() => {
     let timers: NodeJS.Timeout[] = [];
-  
+
     if (loading) {
       setLoadingStep(0);
       if (template === "andromeda") {
@@ -78,72 +184,9 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit, template, loading = f
       setLoadingStep(0); // Reset when not loading
       timers.forEach(timer => clearTimeout(timer));
     }
-  
+
     return () => timers.forEach(timer => clearTimeout(timer));
-  }, [loading]);
-
-  const { register, handleSubmit, control, reset, formState: { errors }, setValue, watch } = useForm<ResumeFormData>({
-    resolver: yupResolver(schema as any),
-    defaultValues: {
-      personal: {
-        name: '',
-        headline: '',
-        email: '',
-        website: { name: '', link: '' },
-        location: ''
-      },
-      summary: '',
-      languages: [],
-      awards: [],
-      certifications: [],
-      interests: [],
-      experience: [],
-      education: [],
-      projects: [],
-      references: []
-    }
-  });
-
-  const { fields: socialFields, append: appendSocial, remove: removeSocial } = useFieldArray({
-    control,
-    name: 'socials'
-  });
-
-  const { fields: skillsFields, append: appendSkill, remove: removeSkill } = useFieldArray({
-    control,
-    name: 'skills'
-  });
-  
-  // Field arrays for dynamic sections
-  const { fields: experienceFields, append: appendExperience, remove: removeExperience } = useFieldArray({
-    control,
-    name: 'experience'
-  });
-
-  const { fields: educationFields, append: appendEducation, remove: removeEducation } = useFieldArray({
-    control,
-    name: 'education'
-  });
-
-  const { fields: projectFields, append: appendProject, remove: removeProject } = useFieldArray({
-    control,
-    name: 'projects'
-  });
-
-  const { fields: awardFields, append: appendAward, remove: removeAward } = useFieldArray({
-    control,
-    name: 'awards'
-  });
-
-  const { fields: certificationFields, append: appendCertification, remove: removeCertification } = useFieldArray({
-    control,
-    name: 'certifications'
-  });
-
-  const { fields: referenceFields, append: appendReference, remove: removeReference } = useFieldArray({
-    control,
-    name: 'references'
-  });
+  }, [loading, template]);
 
   const handleSubmitForm = (data: ResumeFormData) => {
     // Save form data to localStorage
@@ -157,7 +200,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit, template, loading = f
       ...data,
       projects: data.projects.map(project => ({
         ...project,
-        technologies: typeof project.technologies === 'string' 
+        technologies: typeof project.technologies === 'string'
           ? (project.technologies as string).split(',').map(t => t.trim()).filter(t => t.length > 0)
           : project.technologies || []
       }))
@@ -167,18 +210,21 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit, template, loading = f
 
   return (
     <form onSubmit={handleSubmit(handleSubmitForm)} className="space-y-8">
+
       {/* Personal Details */}
-      <PersonalFieldsComponent
-        sectionHeaderClasses={sectionHeaderClasses}
-        sectionDivClasses={sectionDivClasses}
-        labelClasses={labelClasses}
-        register={register}
-        errors={errors}
-        inputClasses={inputClasses}
-      />
+      <div ref={sectionRefs?.personalRef}>
+        <PersonalFieldsComponent
+          sectionHeaderClasses={sectionHeaderClasses}
+          sectionDivClasses={sectionDivClasses}
+          labelClasses={labelClasses}
+          register={register}
+          errors={errors}
+          inputClasses={inputClasses}
+        />
+      </div>
 
       {/* Professional Summary Field */}
-      <div className="space-y-4">
+      <div className="space-y-4" ref={sectionRefs?.summaryRef}>
         <h2 className={`${sectionHeaderClasses} ${sectionDivClasses}`}>Summary</h2>
         <div>
           <Label htmlFor="summary" className={labelClasses}>Summary</Label>
@@ -192,70 +238,88 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit, template, loading = f
       </div>
 
       {/* Social Links Fields */}
-      <SocialsFieldsComponent
-        sectionDivClasses={sectionDivClasses}
-        sectionHeaderClasses={sectionHeaderClasses}
-        appendSocial={appendSocial}
-        addButtonClasses={addButtonClasses}
-        socialFields={socialFields}
-        setValue={setValue}
-        control={control}
-        register={register}
-        removeSocial={removeSocial}
-      />
+      <div ref={sectionRefs?.socialsRef}>
+        <SocialsFieldsComponent
+          sectionDivClasses={sectionDivClasses}
+          sectionHeaderClasses={sectionHeaderClasses}
+          appendSocial={appendSocial}
+          addButtonClasses={addButtonClasses}
+          socialFields={socialFields}
+          setValue={setValue}
+          control={control}
+          register={register}
+          removeSocial={removeSocial}
+        />
+      </div>
 
       {/* Experience Fields */}
-      <ExperienceFieldsComponent
-        sectionDivClasses={sectionDivClasses}
-        sectionHeaderClasses={sectionHeaderClasses}
-        appendExperience={appendExperience}
-        addButtonClasses={addButtonClasses}
-        experienceFields={experienceFields}
-        cardClasses={cardClasses}
-        removeExperience={removeExperience}
-        inputClasses={inputClasses}
-        removeButtonClasses={removeButtonClasses}
-        register={register}
-        labelClasses={labelClasses}
-        errors={errors}
-        control={control}
-      />
+      <div ref={sectionRefs?.experienceRef}>
+        <ExperienceFieldsComponent
+          sectionDivClasses={sectionDivClasses}
+          sectionHeaderClasses={sectionHeaderClasses}
+          appendExperience={appendExperience}
+          addButtonClasses={addButtonClasses}
+          experienceFields={experienceFields}
+          cardClasses={cardClasses}
+          removeExperience={removeExperience}
+          moveExperience={moveExperience}
+          inputClasses={inputClasses}
+          removeButtonClasses={removeButtonClasses}
+          register={register}
+          labelClasses={labelClasses}
+          errors={errors}
+          control={control}
+          watch={watch}
+          setValue={setValue}
+        />
+      </div>
 
       {/* Education Fields */}
-      <EducationFieldsComponent
-        sectionDivClasses={sectionDivClasses}
-        sectionHeaderClasses={sectionHeaderClasses}
-        appendEducation={appendEducation}
-        addButtonClasses={addButtonClasses}
-        educationFields={educationFields}
-        cardClasses={cardClasses}
-        removeEducation={removeEducation}
-        removeButtonClasses={removeButtonClasses}
-        errors={errors}
-        register={register}
-        labelClasses={labelClasses}
-        inputClasses={inputClasses}
-        control={control}
-      />
+      <div ref={sectionRefs?.educationRef}>
+        <EducationFieldsComponent
+          sectionDivClasses={sectionDivClasses}
+          sectionHeaderClasses={sectionHeaderClasses}
+          appendEducation={appendEducation}
+          addButtonClasses={addButtonClasses}
+          educationFields={educationFields}
+          cardClasses={cardClasses}
+          removeEducation={removeEducation}
+          moveEducation={moveEducation}
+          removeButtonClasses={removeButtonClasses}
+          errors={errors}
+          register={register}
+          labelClasses={labelClasses}
+          inputClasses={inputClasses}
+          control={control}
+          watch={watch}
+          setValue={setValue}
+        />
+      </div>
 
       {/* Skills */}
-      <SkillsFieldsComponent
-        sectionDivClasses={sectionDivClasses}
-        sectionHeaderClasses={sectionHeaderClasses}
-        appendSkill={appendSkill}
-        addButtonClasses={addButtonClasses}
-        cardClasses={cardClasses}
-        skillsFields={skillsFields}
-        removeSkill={removeSkill}
-        removeButtonClasses={removeButtonClasses}
-        errors={errors}
-        register={register}
-        labelClasses={labelClasses}
-        inputClasses={inputClasses}
-      />
+      <div ref={sectionRefs?.skillsRef}>
+        <SkillsFieldsComponent
+          sectionDivClasses={sectionDivClasses}
+          sectionHeaderClasses={sectionHeaderClasses}
+          appendSkill={appendSkill}
+          addButtonClasses={addButtonClasses}
+          cardClasses={cardClasses}
+          skillsFields={skillsFields}
+          removeSkill={removeSkill}
+          moveSkill={moveSkill}
+          removeButtonClasses={removeButtonClasses}
+          errors={errors}
+          register={register}
+          labelClasses={labelClasses}
+          inputClasses={inputClasses}
+          watch={watch}
+          setValue={setValue}
+          control={control}
+        />
+      </div>
 
       {/* Languages */}
-      <div className="space-y-4">
+      <div className="space-y-4" ref={sectionRefs?.languagesRef}>
         <h2 className={`${sectionHeaderClasses} ${sectionDivClasses}`}>Languages</h2>
         <div>
           <Label htmlFor="languages" className={labelClasses}>Spoken Languages</Label>
@@ -269,7 +333,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit, template, loading = f
       </div>
 
       {/* Interests */}
-      <div className="space-y-4">
+      <div className="space-y-4" ref={sectionRefs?.interestsRef}>
         <h2 className={`${sectionHeaderClasses} ${sectionDivClasses}`}>Interests & Hobbies</h2>
         <div>
           <Label htmlFor="interests" className={labelClasses}>Interests</Label>
@@ -284,71 +348,92 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit, template, loading = f
       </div>
 
       {/* Projects */}
-      <ProjectFieldsComponent
-        sectionDivClasses={sectionDivClasses}
-        sectionHeaderClasses={sectionHeaderClasses}
-        appendProject={appendProject}
-        addButtonClasses={addButtonClasses}
-        cardClasses={cardClasses}
-        projectFields={projectFields}
-        removeProject={removeProject}
-        removeButtonClasses={removeButtonClasses}
-        errors={errors}
-        register={register}
-        labelClasses={labelClasses}
-        inputClasses={inputClasses}
-      />
+      <div ref={sectionRefs?.projectsRef}>
+        <ProjectFieldsComponent
+          sectionDivClasses={sectionDivClasses}
+          sectionHeaderClasses={sectionHeaderClasses}
+          appendProject={appendProject}
+          addButtonClasses={addButtonClasses}
+          cardClasses={cardClasses}
+          projectFields={projectFields}
+          removeProject={removeProject}
+          removeButtonClasses={removeButtonClasses}
+          errors={errors}
+          register={register}
+          labelClasses={labelClasses}
+          inputClasses={inputClasses}
+          moveProject={moveProject}
+          watch={watch}
+          setValue={setValue}
+          control={control}
+        />
+      </div>
 
       {/* Awards Fields */}
-      <AwardFieldsComponent
-        sectionDivClasses={sectionDivClasses}
-        sectionHeaderClasses={sectionHeaderClasses}
-        appendAward={appendAward}
-        addButtonClasses={addButtonClasses}
-        awardFields={awardFields}
-        cardClasses={cardClasses}
-        removeAward={removeAward}
-        removeButtonClasses={removeButtonClasses}
-        inputClasses={inputClasses}
-        register={register}
-        labelClasses={labelClasses}
-        errors={errors}
-        control={control}
-      />
+      <div ref={sectionRefs?.awardsRef}>
+        <AwardFieldsComponent
+          sectionDivClasses={sectionDivClasses}
+          sectionHeaderClasses={sectionHeaderClasses}
+          appendAward={appendAward}
+          addButtonClasses={addButtonClasses}
+          awardFields={awardFields}
+          cardClasses={cardClasses}
+          removeAward={removeAward}
+          removeButtonClasses={removeButtonClasses}
+          inputClasses={inputClasses}
+          register={register}
+          labelClasses={labelClasses}
+          errors={errors}
+          control={control}
+          moveAward={moveAward}
+          watch={watch}
+          setValue={setValue}
+        />
+      </div>
 
       {/* Certifications */}
-      <CertificationFieldsComponent
-        sectionDivClasses={sectionDivClasses}
-        sectionHeaderClasses={sectionHeaderClasses}
-        appendCertification={appendCertification}
-        addButtonClasses={addButtonClasses}
-        certificationFields={certificationFields}
-        cardClasses={cardClasses}
-        removeCertification={removeCertification}
-        removeButtonClasses={removeButtonClasses}
-        errors={errors}
-        register={register}
-        labelClasses={labelClasses}
-        inputClasses={inputClasses}
-        watch={watch}
-        setValue={setValue}
-      />
+      <div ref={sectionRefs?.certificationsRef}>
+        <CertificationFieldsComponent
+          sectionDivClasses={sectionDivClasses}
+          sectionHeaderClasses={sectionHeaderClasses}
+          appendCertification={appendCertification}
+          addButtonClasses={addButtonClasses}
+          certificationFields={certificationFields}
+          cardClasses={cardClasses}
+          removeCertification={removeCertification}
+          removeButtonClasses={removeButtonClasses}
+          errors={errors}
+          register={register}
+          labelClasses={labelClasses}
+          inputClasses={inputClasses}
+          watch={watch}
+          setValue={setValue}
+          moveCertification={moveCertification}
+          control={control}
+        />
+      </div>
 
       {/* References */}
-      <ReferencesFieldsComponent
-        sectionDivClasses={sectionDivClasses}
-        sectionHeaderClasses={sectionHeaderClasses}
-        appendReference={appendReference}
-        addButtonClasses={addButtonClasses}
-        cardClasses={cardClasses}
-        referenceFields={referenceFields}
-        removeReference={removeReference}
-        removeButtonClasses={removeButtonClasses}
-        errors={errors}
-        register={register}
-        labelClasses={labelClasses}
-        inputClasses={inputClasses}
-      />
+      <div ref={sectionRefs?.referencesRef}>
+        <ReferencesFieldsComponent
+          sectionDivClasses={sectionDivClasses}
+          sectionHeaderClasses={sectionHeaderClasses}
+          appendReference={appendReference}
+          addButtonClasses={addButtonClasses}
+          cardClasses={cardClasses}
+          referenceFields={referenceFields}
+          removeReference={removeReference}
+          removeButtonClasses={removeButtonClasses}
+          errors={errors}
+          register={register}
+          labelClasses={labelClasses}
+          inputClasses={inputClasses}
+          watch={watch}
+          moveReference={moveReference}
+          setValue={setValue}
+          control={control}
+        />
+      </div>
 
       {/* Submit Button */}
       <div className="pt-6">

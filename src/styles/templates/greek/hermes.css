@@ -1,0 +1,413 @@
+* {
+  box-sizing: border-box !important;
+}
+
+.hermes-resume {
+  font-family: 'Ubuntu', sans-serif !important;
+  background-color: #ffffff !important;
+  color: #333333 !important;
+  line-height: 1.5 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 12px !important;
+}
+
+/* Header Section */
+.resume-header {
+  background-color: #ffffff !important;
+}
+
+.resume-header-content {
+  text-align: left !important;
+}
+
+.resume-name {
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  color: #2c3e50 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  margin-left: 1rem !important;
+  margin-top: 1rem !important;
+}
+
+.resume-title {
+  font-size: 0.9rem !important;
+  font-weight: 400 !important;
+  color: #7f8c8d !important;
+  margin-left: 1rem !important;
+}
+
+.resume-summary {
+  font-size: 0.85rem !important;
+  color: #555555 !important;
+  margin-bottom: 10px !important;
+  line-height: 1.6 !important;
+  margin-left: 1rem !important;
+}
+
+.contact-info {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 20px !important;
+  margin-bottom: 15px !important;
+  margin-left: 1rem !important;
+}
+
+.contact-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-size: 12px !important;
+}
+
+.contact-item i {
+  color: #3498db !important;
+  width: 16px !important;
+  text-align: center !important;
+}
+
+.contact-item a {
+  text-decoration: none !important;
+}
+
+.contact-item a:hover {
+  text-decoration: underline !important;
+}
+
+.social-links {
+  display: flex !important;
+  justify-content: center !important;
+  gap: 25px !important;
+  margin-top: 10px !important;
+  border-top: 1px solid #333333 !important;
+  border-bottom: 1px solid #333333 !important;
+  padding-block: 0.65rem !important;
+  margin-right: -1.5rem !important;
+}
+
+.social-link {
+  font-size: 20px !important;
+  text-decoration: none !important;
+  transition: color 0.3s ease !important;
+}
+
+.social-link:hover {
+  color: #2980b9 !important;
+}
+
+/* Content Layout - FIXED */
+.resume-content {
+  display: flex !important;
+  gap: 20px !important;
+  margin: 0 auto !important;
+  padding: 1rem 1rem 0 1rem !important;
+}
+
+.resume-left-column {
+  flex: 2 !important;
+  min-width: 0 !important;
+  padding-right: 0.5rem !important;
+}
+
+.resume-right-column {
+  flex: 1.3 !important;
+  min-width: 0 !important;
+}
+
+/* Section Styles */
+.resume-section {
+  margin-bottom: 20px !important;
+}
+
+.resume-section:last-child {
+  margin-bottom: 0 !important;
+}
+
+.section-title {
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  color: #2c3e50 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  margin-bottom: 3px !important;
+}
+
+/* Work Experience */
+.experience-item {
+  margin-bottom: 15px !important;
+}
+
+.experience-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  margin-bottom: 2px !important;
+  flex-wrap: wrap !important;
+}
+
+.experience-title {
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  color: #2c3e50 !important;
+  margin: 0 !important;
+}
+
+.experience-date {
+  font-size: 0.8rem !important;
+  color: #7f8c8d !important;
+  font-style: italic !important;
+  white-space: nowrap !important;
+}
+
+.experience-company {
+  font-size: 12px !important;
+  color: #3498db !important;
+  font-weight: 500 !important;
+  margin-bottom: 5px !important;
+}
+
+.experience-description {
+  font-size: 0.8rem !important;
+  color: #555555 !important;
+  line-height: 1.5 !important;
+}
+
+.experience-description p {
+  margin-bottom: 5px !important;
+}
+
+.experience-item:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* Skills */
+.skills-grid {
+  margin-top: 0.5rem !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 5px !important;
+}
+
+.skill-tag {
+  background-color: #e8f4f8 !important;
+  color: #2c3e50 !important;
+  padding: 4px 10px !important;
+  border-radius: 15px !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  display: inline-block !important;
+}
+
+/* Certificates */
+.certificate-item {
+  margin-bottom: 15px !important;
+}
+
+.certificate-name {
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  color: #2c3e50 !important;
+  margin-bottom: 3px !important;
+}
+
+.certificate-org {
+  font-size: 0.8rem !important;
+  color: #7f8c8d !important;
+  margin-bottom: 3px !important;
+}
+
+.certificate-date {
+  font-size: 10px !important;
+  color: #95a5a6 !important;
+  font-style: italic !important;
+}
+
+/* Education */
+.education-item {
+  margin-bottom: 15px !important;
+}
+
+.education-degree {
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  color: #2c3e50 !important;
+  margin-bottom: 3px !important;
+}
+
+.education-school {
+  font-size: 0.8rem !important;
+  color: #7f8c8d !important;
+  margin-bottom: 3px !important;
+}
+
+.education-date {
+  font-size: 0.8rem !important;
+  color: #95a5a6 !important;
+  font-style: italic !important;
+}
+
+/* Projects */
+.project-item {
+  margin-bottom: 18px !important;
+  padding-bottom: 15px !important;
+  border-bottom: 1px solid #ecf0f1 !important;
+}
+
+.project-item:last-child {
+  border-bottom: none !important;
+}
+
+.project-title {
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  color: #2c3e50 !important;
+  margin-bottom: 8px !important;
+}
+
+.project-description {
+  font-size: 0.8rem !important;
+  color: #555555 !important;
+  line-height: 1.5 !important;
+  margin-bottom: 8px !important;
+}
+
+.project-technologies {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+}
+
+.tech-tag {
+  background-color: #3498db !important;
+  color: white !important;
+  padding: 2px 8px !important;
+  border-radius: 10px !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+}
+
+/* Awards */
+.award-item {
+  margin-bottom: 15px !important;
+}
+
+.award-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  margin-bottom: 5px !important;
+  flex-wrap: wrap !important;
+}
+
+.award-title {
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  color: #2c3e50 !important;
+  margin: 0 !important;
+}
+
+.award-date {
+  font-size: 0.8rem !important;
+  color: #95a5a6 !important;
+  font-style: italic !important;
+}
+
+.award-description {
+  font-size: 0.8rem !important;
+  color: #555555 !important;
+  line-height: 1.5 !important;
+}
+
+/* Interests */
+.interests-grid {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+}
+
+.interest-tag {
+  background-color: #e8f4f8 !important;
+  color: #2c3e50 !important;
+  padding: 4px 10px !important;
+  border-radius: 15px !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+}
+
+/* Languages */
+.languages-list {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+}
+
+.language-item {
+  background-color: #e8f4f8 !important;
+  padding: 4px 10px !important;
+  border-radius: 15px !important;
+  border: 1px solid #dee2e6 !important;
+}
+
+.language-name {
+  font-size: 11px !important;
+  color: #2c3e50 !important;
+  font-weight: 500 !important;
+}
+
+/* References */
+.reference-item {
+  margin-bottom: 15px !important;
+}
+
+.reference-item:last-child {
+  margin-bottom: 0 !important;
+}
+
+.reference-name {
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  color: #2c3e50 !important;
+  margin-bottom: 3px !important;
+}
+
+.reference-title {
+  font-size: 0.8rem !important;
+  color: #7f8c8d !important;
+  margin-bottom: 3px !important;
+}
+
+.reference-contact {
+  font-size: 0.8rem !important;
+  color: #95a5a6 !important;
+}
+
+/* List formatting improvements */
+ul.list-disc,
+ul.ml-3 {
+  margin-left: 0 !important;
+  padding-left: 1.5em !important;
+  margin-top: 0.5em !important;
+  margin-bottom: 0.5em !important;
+}
+
+ul.list-disc {
+  list-style-type: disc !important;
+}
+
+ul.list-disc li {
+  margin-bottom: 0.4em !important;
+  line-height: 1.4 !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+}
+
+ul.list-disc li:last-child {
+  margin-bottom: 0 !important;
+}
+
+ul.list-disc li p {
+  margin: 0 !important;
+  padding: 0 !important;
+}

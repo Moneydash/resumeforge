@@ -3,26 +3,29 @@
 ![Resume Builder](https://img.shields.io/badge/Resume%20Builder-1.0.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-A modern, responsive resume builder application built with React, TypeScript, and Tailwind CSS. Create professional resumes with multiple templates and export them as high-quality PDFs.
+A modern, responsive resume builder application built with React, TypeScript, and Tailwind CSS. Create professional resumes with multiple templates, live preview, and export them as high-quality PDFs. Includes authentication, protected routes, and dark mode support.
 
 ## Features
 
-- **Multiple Templates**: Choose from Classic, Modern, Minimal, and Creative resume templates
-- **Live Preview**: See changes to your resume in real-time as you edit
-- **PDF Export**: Export your resume as a high-quality PDF document
-- **Responsive Design**: Works on desktop and mobile devices
-- **Local Storage**: Your resume data is automatically saved in your browser
-- **Dark Mode Support**: Seamless experience in both light and dark modes
+- **Multiple Professional Templates**: Choose from the Galaxy and Greek Gods template collections (e.g., Zeus, Athena, Apollo, Andromeda, Comet, etc.), each with unique layouts and styles.
+- **Live Preview**: Instantly see your resume in the selected template as you edit.
+- **PDF Export**: Download your resume as a high-quality PDF, ready for job applications.
+- **Authentication**: Sign in with Google or GitHub for a secure, personalized experience.
+- **Protected Routes**: Resume editing and template selection are protected and require login.
+- **Responsive Design**: Works seamlessly on desktop and mobile devices.
+- **Local Storage**: Your resume data is automatically saved in your browser for convenience.
+- **Dark Mode Support**: Enjoy a seamless experience in both light and dark modes.
+- **Modern UI/UX**: Clean, professional, and user-friendly interface.
 
 ## Technologies Used
 
 - **React**: UI library for building the interface
 - **TypeScript**: For type safety and better developer experience
 - **Tailwind CSS**: For styling and responsive design
-- **React PDF**: For generating PDF documents
-- **React Hook Form**: For form handling and validation
-- **Zod**: For schema validation
+- **React Hook Form & Yup**: For form handling and schema validation
 - **Vite**: For fast development and building
+- **Sonner (shadcn/ui)**: For modern toast notifications
+- **React Router**: For client-side routing and protected routes
 
 ## Getting Started
 
@@ -57,34 +60,37 @@ A modern, responsive resume builder application built with React, TypeScript, an
 
 ## Usage
 
-1. Fill out the form with your personal information, experience, education, skills, etc.
-2. Select a template from the available options
-3. Preview your resume in real-time
-4. Export your resume as a PDF when you're satisfied with the result
+1. Sign in with Google or GitHub.
+2. Fill out the form with your personal information, experience, education, skills, etc.
+3. Select a template from the Galaxy or Greek Gods collections.
+4. Preview your resume in real-time.
+5. Export your resume as a PDF when you're satisfied with the result.
 
 ## PDF Export
 
-The application uses React PDF to generate high-quality PDF documents. The PDF export functionality includes:
-
-- Proper formatting and styling
-- Support for images and icons
-- Custom page sizes based on content
-- Compatibility with modern browsers
+The application allows you to export your resume as a high-quality PDF, preserving the selected template's design and formatting. PDF export is available directly from the preview page.
 
 ## Project Structure
 
 ```
 src/
+├── api/              # API utilities (e.g., axios instance)
 ├── assets/           # Static assets like images and icons
 ├── components/       # React components
-│   ├── form/         # Form components
-│   ├── pdf/          # PDF generation components
-│   ├── templates/    # Resume templates
-│   └── ui/           # UI components
-├── styles/           # Global styles and PDF styles
+│   ├── forms/        # Form sections for resume fields
+│   ├── templates/    # Resume templates (Galaxy & Greek Gods)
+│   ├── ui/           # UI components (inputs, buttons, etc.)
+│   └── ...           # Other shared components
+├── contexts/         # React context providers (e.g., Theme)
+├── lib/              # Utility functions
+├── pages/            # Main pages (Home, Login, Templates, Preview)
+├── schema/           # Yup validation schemas
+├── styles/           # Global and template-specific styles
 ├── types/            # TypeScript type definitions
-├── utils/            # Utility functions
-└── App.tsx          # Main application component
+├── utils/            # Helper utilities
+├── App.tsx           # Main application component
+├── main.tsx          # App entry point
+└── routes.tsx        # Route definitions (with lazy loading)
 ```
 
 ## Contributing
@@ -103,51 +109,8 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 
 ## Acknowledgments
 
-- [React PDF](https://react-pdf.org/) for PDF generation
+- [React](https://react.dev/) for the UI framework
 - [Tailwind CSS](https://tailwindcss.com/) for styling
-- [React Hook Form](https://react-hook-form.com/) for form handling
-- [Heroicons](https://heroicons.com/) for icons
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+- [React Hook Form](https://react-hook-form.com/) and [Yup](https://github.com/jquense/yup) for form handling and validation
+- [Sonner (shadcn/ui)](https://ui.shadcn.com/docs/components/sonner) for toast notifications
+- [Heroicons](https://heroicons.com/) and [Lucide](https://lucide.dev/) for icons

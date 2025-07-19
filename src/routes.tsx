@@ -1,8 +1,14 @@
+import { lazy, Suspense } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
-import Home from './pages/Home';
-import Templates from './pages/Templates';
-import Preview from './pages/Preview';
+
+// lazy imports for faster imports
+const Home = lazy(() => import('./pages/Home'));
+const Templates = lazy(() => import('./pages/Templates'));
+const Preview = lazy(() => import('./pages/Preview'));
+const Login = lazy(() => import('./pages/Login'));
 import Footer from './components/Footer';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import Loader from './components/Loader';
 
 const RouteComponent = () => {
   const location = useLocation();
@@ -12,11 +18,28 @@ const RouteComponent = () => {
 
   return (
     <>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/templates" element={<Templates />} />
-        <Route path="/preview" element={<Preview />} />
-      </Routes>
+      <Suspense fallback={<Loader />}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/templates"
+            element={
+              <ProtectedRoute>
+                <Templates />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/preview"
+            element={
+              <ProtectedRoute>
+                <Preview />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </Suspense>
       {showFooter && <Footer />}
     </>
   );

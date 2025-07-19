@@ -61,7 +61,7 @@ const SocialsFieldsComponent: React.FC<socialFieldComponentInterface> = ({
     { name: 'Medium', slug: 'medium' }
   ];
 
-  return(
+  return (
     <div className="space-y-4">
       <div className={`${sectionDivClasses} flex justify-between items-center`}>
         <h2 className={sectionHeaderClasses}>Socials</h2>
@@ -79,13 +79,15 @@ const SocialsFieldsComponent: React.FC<socialFieldComponentInterface> = ({
             {/* Dropdown to select social platform */}
             <Controller
               control={control}
-              name={`socials.${index}.name`}
+              name={`socials.${index}.slug`}
               render={({ field }) => (
                 <Select
                   value={field.value || ""}
                   onValueChange={val => {
                     field.onChange(val);
-                    setValue(`socials.${index}.slug`, val.toLowerCase());
+                    // Optionally, set the name as well if you want to keep both in sync:
+                    const selected = soc.find(s => s.slug === val);
+                    setValue(`socials.${index}.name`, selected ? selected.name : "");
                   }}
                 >
                   <SelectTrigger className="w-[180px]">
@@ -115,7 +117,7 @@ const SocialsFieldsComponent: React.FC<socialFieldComponentInterface> = ({
           {/* Remove button */}
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="destructive" size="icon" onClick={() => removeSocial(index)}><Trash2Icon size={20}/></Button>
+              <Button variant="destructive" size="icon" onClick={() => removeSocial(index)}><Trash2Icon size={20} /></Button>
             </TooltipTrigger>
             <TooltipContent className="bg-blue-500 dark:bg-blue-600 dark:text-white">
               <p>Remove Link</p>

@@ -87,7 +87,7 @@ const EditorComponent: React.FC<editorInterface> = ({ value, setValue }) => {
     },
     {
       icon: <Heading3Icon />,
-      onClick: () => editor?.chain().focus().toggleHeading({ level: 3 }).run()  ,
+      onClick: () => editor?.chain().focus().toggleHeading({ level: 3 }).run(),
       pressed: editor?.isActive('heading', { level: 3 }),
       tooltip: 'Heading 3'
     },
@@ -192,7 +192,7 @@ const EditorComponent: React.FC<editorInterface> = ({ value, setValue }) => {
               </Toggle>
             </TooltipTrigger>
             <TooltipContent>
-              <p>{option.tooltip}</p>
+              <p className="dark:text-white">{option.tooltip}</p>
             </TooltipContent>
           </Tooltip>
         ))}
