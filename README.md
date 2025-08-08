@@ -1,7 +1,7 @@
 # 🎯 ResumeForge - Professional Resume Builder
 
 ![Resume Builder](https://img.shields.io/badge/Resume%20Builder-2.0.0-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
+![License](https://img.shields.io/badge/license-Polyform-green)
 ![React](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.6.2-3178C6?logo=typescript)
 ![Tailwind](https://img.shields.io/badge/Tailwind-4.1.8-06B6D4?logo=tailwindcss)
