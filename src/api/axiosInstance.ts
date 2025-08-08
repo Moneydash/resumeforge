@@ -3,11 +3,12 @@ import Cookies from 'js-cookie';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
-const client = axios.create({ baseURL: API_URL });
+const client = axios.create({ baseURL: API_URL, withCredentials: true });
 
 // Add a request interceptor for adding auth token
 client.interceptors.request.use(
   (config) => {
+    config.headers = config.headers || {};
     // Get token from cookies
     const token = Cookies.get('access_token'); // Get token from cookies
     if (token) { // Set the header only if the token exists

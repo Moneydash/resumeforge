@@ -1,6 +1,6 @@
 import { parseMonthYear } from "@/utils/helper";
 import React from "react";
-import type { TemplateProps } from "@/types/interface.template-props";
+import type { TemplateProps } from "@/types";
 import AthenaCss from "@/styles/templates/greek/athena.css?inline";
 
 const AthenaTemplate: React.FC<TemplateProps> = ({ data }) => {

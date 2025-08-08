@@ -1,9 +1,9 @@
 import { parseMonthYear } from "@/utils/helper";
 import React from "react";
 import type { TemplateProps } from "@/types";
-import cigarCss from "@/styles/templates/galaxy/cigar.css?inline";
+import cigarCss from "@/styles/templates/greek/hera.css?inline";
 
-const CigarTemplate: React.FC<TemplateProps> = ({ data }) => {
+const HeraTemplate: React.FC<TemplateProps> = ({ data }) => {
   const aboutSection = (
     <section className="classic-section">
       <h2 className="classic-section-title">Summary</h2>
@@ -71,23 +71,31 @@ const CigarTemplate: React.FC<TemplateProps> = ({ data }) => {
   const skillSection = (
     <section className="classic-section">
       <h2 className="classic-section-title">Skills</h2>
-      <div className="classic-skills">{data?.skills?.filter(skill => !skill.hidden)?.map((skill) => (
-        skill?.keywords?.join(", ")
-      ))}</div>
+      <div className="classic-skills-grid">
+        {data?.skills?.filter(skill => !skill.hidden)?.map((skill) =>
+          skill?.keywords?.map((keyword, j) => (
+            <div key={j} className="classic-skill-item">• {keyword}</div>
+          ))
+        )}
+      </div>
     </section>
   );
 
   const langSection = (
     <section className="classic-section">
       <h2 className="classic-section-title">Languages</h2>
-      <div className="classic-languages">{data?.languages?.join(", ")}</div>
+      <div className="classic-languages">{data?.languages?.join(" • ")}</div>
     </section>
   );
 
   const interestsSection = (
     <section className="classic-section">
       <h2 className="classic-section-title">Interests</h2>
-      <div className="classic-languages">{data?.interests?.join(", ")}</div>
+      <div className="classic-interests-grid">
+        {data?.interests?.map((interest, i) => (
+          <div key={i} className="classic-interest-item">• {interest}</div>
+        ))}
+      </div>
     </section>
   );
 
@@ -181,4 +189,4 @@ const CigarTemplate: React.FC<TemplateProps> = ({ data }) => {
   );
 };
 
-export default CigarTemplate;
+export default HeraTemplate;

@@ -1,6 +1,6 @@
 import { parseMonthYear } from "@/utils/helper";
 import React from "react";
-import type { TemplateProps } from "@/types/interface.template-props";
+import type { TemplateProps } from "@/types";
 import ApolloCss from "@/styles/templates/greek/apollo.css?inline";
 
 const ApolloTemplate: React.FC<TemplateProps> = ({ data }) => {

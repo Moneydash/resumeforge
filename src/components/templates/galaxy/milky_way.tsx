@@ -1,6 +1,6 @@
 import { parseMonthYear } from "@/utils/helper";
 import React from "react";
-import type { TemplateProps } from "@/types/interface.template-props";
+import type { TemplateProps } from "@/types";
 import milkyWayCss from "@/styles/templates/galaxy/milky_way.css?inline";
 
 const MilkyWayTemplate: React.FC<TemplateProps> = ({ data }) => {

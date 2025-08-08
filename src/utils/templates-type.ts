@@ -1,4 +1,4 @@
-import type { Template } from "@/types/interface.template-card";
+import type { Template } from "@/types";
 
 const templates: Template[] = [
   // Galaxy Collection
@@ -155,7 +155,7 @@ const templates: Template[] = [
     theme: "greek",
     color: "from-rose-500 to-pink-600",
     icon: "👑",
-    available: false,
+    available: true,
     features: [
       "Elegant sophistication",
       "Management-focused layout",

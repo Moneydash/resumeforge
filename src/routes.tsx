@@ -6,9 +6,10 @@ const Home = lazy(() => import('./pages/Home'));
 const Templates = lazy(() => import('./pages/Templates'));
 const Preview = lazy(() => import('./pages/Preview'));
 const Login = lazy(() => import('./pages/Login'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
 import Footer from './components/Footer';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import Loader from './components/Loader';
+import Loader from './components/SuspenseLoader';
 
 const RouteComponent = () => {
   const location = useLocation();
@@ -22,6 +23,14 @@ const RouteComponent = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/templates"
             element={

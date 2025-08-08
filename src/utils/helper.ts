@@ -1,4 +1,5 @@
-import type { TemplateType } from "@/types/types.template-types";
+import client from "@/api/axiosInstance";
+import type { TemplateType } from "@/types";
 
 // Function to format dates from YYYY-MM to Month YYYY format
 export const formatDate = (dateString: string): string => {
@@ -70,4 +71,25 @@ export const pdfPayload = (data: object, htmlContent: string, template: Template
   }
 
   return payload;
-}
+};
+
+export const getCsrfToken = async () => {
+  try {
+    const response = await client.get('/csrf-token');
+    client.defaults.headers.common['X-CSRF-Token'] = response.data.csrfToken;
+  } catch (error) {
+    console.error('Failed to fetch CSRF token:', error);
+    throw error;
+  }
+};
+
+// for dashboard date card display
+export const formatDateDisplay = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};

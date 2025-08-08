@@ -1,6 +1,6 @@
 import { parseMonthYear } from "@/utils/helper";
 import React from "react";
-import type { TemplateProps } from "@/types/interface.template-props";
+import type { TemplateProps } from "@/types";
 import ArtemisCss from "@/styles/templates/greek/artemis.css?inline";
 
 const ArtemisTemplate: React.FC<TemplateProps> = ({ data }) => {

@@ -43,15 +43,16 @@ body {
   z-index: 10 !important;
 }
 
-/* Sidebar Styles */
+/* Sidebar Styles - FIXED */
 .resume-sidebar {
   width: 320px !important;
   background: linear-gradient(180deg, #1e3a8a 0%, #1e40af 30%, #2563eb 100%) !important;
   color: #ffffff !important;
   padding: 1.5rem 1rem !important;
   position: relative !important;
-  overflow: hidden !important;
-  height: 100vh !important;
+  overflow: visible !important;
+  min-height: 100% !important;
+  /* Changed from height: 100vh */
 }
 
 /* Greek-inspired pattern overlay */
@@ -244,8 +245,8 @@ body {
 
 .sidebar-project-item:last-child {
   border-bottom: none !important;
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
+  /* margin-bottom: 0 !important;
+  padding-bottom: 0 !important; */
 }
 
 .sidebar-project-title {
@@ -320,7 +321,7 @@ body {
 /* Main Content Styles */
 .resume-main-content {
   flex: 1 !important;
-  padding: 2.5rem 2rem !important;
+  padding: 0 2rem !important;
   background: #ffffff !important;
 }
 
@@ -376,12 +377,12 @@ body {
 }
 
 .main-summary {
-  font-size: 0.75rem !important;
+  font-size: 0.8rem !important;
   color: #4b5563 !important;
   line-height: 1.7 !important;
   text-align: justify !important;
   background: #f8fafc !important;
-  padding: 1.5rem !important;
+  padding: 1rem 1.25rem !important;
   border-radius: 6px !important;
   border-left: 4px solid #2563eb !important;
 }
@@ -557,4 +558,28 @@ body {
   .sidebar-section {
     page-break-inside: avoid !important;
   }
+}
+
+ul.list-disc.ml-3,
+ul.ml-3 {
+  margin-left: 0 !important;
+  padding-left: 1em !important;
+}
+
+ul.list-disc {
+  list-style-type: disc;
+}
+
+ul.list-disc li {
+  margin-top: 0 !important;
+  margin-bottom: 0.5em !important;
+}
+
+ul.list-disc li:not(:first-child) {
+  margin-top: -6px !important;
+}
+
+ul.list-disc li p {
+  margin: 0 !important;
+  padding: 0 !important;
 }

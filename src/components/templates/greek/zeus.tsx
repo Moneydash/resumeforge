@@ -1,13 +1,15 @@
 import { parseMonthYear } from "@/utils/helper";
 import React from "react";
-import type { TemplateProps } from "@/types/interface.template-props";
+import type { TemplateProps } from "@/types";
 import ZeusCss from "@/styles/templates/greek/zeus.css?inline";
 
 const ZeusTemplate: React.FC<TemplateProps> = ({ data }) => {
   const socialSection = (
     <div className="greek-socials">
       {data?.socials?.map((social, i) => (
-        <a href={social?.link} key={i}><i className={`fab fa-${social?.slug} fa-lg`}></i></a>
+        <a href={social?.link} key={i} target="_blank">
+          <i className={`fab fa-${social?.slug} fa-lg`}></i>
+        </a>
       ))}
     </div>
   );
@@ -127,13 +129,13 @@ const ZeusTemplate: React.FC<TemplateProps> = ({ data }) => {
       <h2 className="greek-section-title"><span className="greek-icon">👑</span>Awards & Achievements</h2>
       {data?.awards
         ?.filter(award => !award.hidden)
-        ?.map((award, i) => (
-          <div key={i} className="greek-item">
+        ?.map((award) => (
+          <div className="greek-item">
             <div className="greek-item-header">
               <span className="greek-item-title">{award?.title}</span>
               <span className="greek-item-date">{parseMonthYear(award?.date)}</span>
+              <div className="greek-item-description">{award?.description}</div>
             </div>
-            <div className="greek-item-description">{award?.description}</div>
           </div>
         ))
       }
@@ -149,8 +151,8 @@ const ZeusTemplate: React.FC<TemplateProps> = ({ data }) => {
           <div className="greek-item" key={i}>
             <div className="greek-item-header">
               <span className="greek-item-title">{reference?.name}</span> | <span className="greek-item-subtitle">{reference?.title} at {reference?.company}</span>
+              <div className="greek-item-description">{reference?.email || '-'} | {reference?.phone || '-'}</div>
             </div>
-            <div className="greek-item-description">{reference?.email || '-'} | {reference?.phone || '-'}</div>
           </div>
         ))
       }

@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import { FaGithub } from 'react-icons/fa';
-import { FileText } from 'lucide-react';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 
@@ -15,9 +14,13 @@ const Login: React.FC = () => {
   useEffect(() => {
     const isAuthenticated = !!Cookies.get('user.id') && !!Cookies.get('user.email');
     if (isAuthenticated) {
-      navigate('/templates', { replace: true });
+      navigate('/dashboard', { replace: true });
     }
-  })
+  });
+
+  useEffect(() => {
+    localStorage.clear();
+  });
 
   // Cleanup function to clear polling interval
   const cleanupPolling = () => {
@@ -28,10 +31,10 @@ const Login: React.FC = () => {
   };
 
   // Handle successful login
-  const handleSuccessfulLogin = (userData: any) => {
+  const handleSuccessfulLogin = async (userData: any) => {
     Cookies.set('user.id', userData.id, { secure: true });
     Cookies.set('user.email', userData.email, { secure: true });
-    navigate('/templates');
+    navigate('/dashboard');
   };
 
   // Listen for messages from the popup window
@@ -114,35 +117,50 @@ const Login: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-      <div className="w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-8 flex flex-col items-center">
-        {/* Logo/Title */}
-        <div className="mb-8 flex flex-col items-center">
-          <div className="w-14 h-14 bg-gradient-to-r from-blue-600 to-violet-600 rounded-lg flex items-center justify-center mb-2">
-            <FileText className="w-8 h-8 text-white" />
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950">
+      <div className="w-full max-w-sm">
+        {/* Main Card */}
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-8">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-gray-900 dark:bg-white rounded-lg mb-4">
+              <img alt='Logo' src='/icon.png' className='w-6 h-6' />
+            </div>
+            <h1 className="text-2xl font-semibold text-gray-900 dark:text-white tracking-tight" style={{ fontFamily: 'Geist, sans-serif', }}>
+              Welcome back
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400 text-sm mt-2 font-medium" style={{ fontFamily: 'Geist, sans-serif', }}>
+              Sign in to your ResumeForge account
+            </p>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Sign in to ResumeForge</h1>
-          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Welcome back! Please login to your account.</p>
+
+          {/* Login Buttons */}
+          <div className="space-y-3">
+            <button
+              type="button"
+              className="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-medium hover:bg-gray-50 dark:hover:bg-gray-750 dark:hover:text-black transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-white focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+              onClick={googleLogin}
+            >
+              <FcGoogle className="text-lg" />
+              Continue with Google
+            </button>
+
+            <button
+              type="button"
+              className="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-medium hover:bg-gray-50 dark:hover:bg-gray-750 dark:hover:text-black transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-white focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+              onClick={githubLogin}
+            >
+              <FaGithub className="text-lg" />
+              Continue with GitHub
+            </button>
+          </div>
         </div>
 
-        {/* Social Login Buttons */}
-        <div className="flex w-full gap-4">
-          <button
-            type="button"
-            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-medium shadow hover:bg-gray-50 dark:hover:bg-gray-700 transition"
-            onClick={googleLogin}
-          >
-            <FcGoogle className="text-xl" />
-            Google
-          </button>
-          <button
-            type="button"
-            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-medium shadow hover:bg-gray-50 dark:hover:bg-gray-700 transition"
-            onClick={githubLogin}
-          >
-            <FaGithub className="text-xl" />
-            GitHub
-          </button>
+        {/* Footer */}
+        <div className="text-center mt-6">
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            By signing in, you agree to our Terms of Service and Privacy Policy
+          </p>
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import type { TemplateProps } from "@/types/interface.template-props";
+import type { TemplateProps } from "@/types";
 import CometCss from "@/styles/templates/galaxy/comet.css?inline";
 
 const CometTemplate: React.FC<TemplateProps> = ({ data }) => {

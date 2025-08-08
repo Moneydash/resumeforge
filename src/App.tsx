@@ -1,7 +1,7 @@
 import { BrowserRouter as Router } from "react-router-dom"
 import RouteComponent from "./routes"
 import { ThemeProvider } from "./contexts/ThemeContext"
-import { Toaster } from "sonner"
+import { Toaster } from "sonner";
 
 function App() {
   return (
