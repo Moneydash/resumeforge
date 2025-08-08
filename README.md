@@ -70,24 +70,40 @@ A cutting-edge, responsive resume builder application built with React, TypeScri
 
 ## 🎨 Template Gallery
 
+> **📝 Note**: The resume templates shown below contain AI-generated mock data for demonstration purposes only. The actual application allows you to input your own personal information and customize all content according to your professional background and preferences.
+
 ### Galaxy Collection - Timeless Professional Designs
 
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 20px 0;">
+
+<div>
 
 #### Executive Classic (Cigar)
 <img src="src/assets/snapshots/galaxy/cigar.jpg" alt="Executive Classic Template" style="filter: blur(1px); opacity: 0.7; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" width="300" />
 
 *Sophisticated template designed for senior professionals and executives seeking timeless elegance.*
 
+</div>
+
+<div>
+
 #### Modern Professional (Andromeda)
 <img src="src/assets/snapshots/galaxy/andromeda.jpg" alt="Modern Professional Template" style="filter: blur(1px); opacity: 0.7; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" width="300" />
 
 *Modern design that balances innovation with professionalism for today's dynamic workplace.*
 
+</div>
+
+<div>
+
 #### Executive Minimal (Comet)
 <img src="src/assets/snapshots/galaxy/comet.jpg" alt="Executive Minimal Template" style="filter: blur(1px); opacity: 0.7; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" width="300" />
 
 *Refined minimalism that lets your achievements speak through sophisticated simplicity.*
+
+</div>
+
+<div>
 
 #### Creative Professional (Milky Way)
 <img src="src/assets/snapshots/galaxy/milky-way.jpg" alt="Creative Professional Template" style="filter: blur(1px); opacity: 0.7; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" width="300" />
@@ -96,39 +112,65 @@ A cutting-edge, responsive resume builder application built with React, TypeScri
 
 </div>
 
+</div>
+
 ### Greek Gods Collection - Legendary Power & Wisdom
 
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 20px 0;">
+
+<div>
 
 #### Zeus Executive
 <img src="src/assets/snapshots/greek/zeus.jpg" alt="Zeus Executive Template" style="filter: blur(1px); opacity: 0.7; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" width="300" />
 
 *Command authority and respect with this powerful template for C-suite executives.*
 
+</div>
+
+<div>
+
 #### Athena Strategic
 <img src="src/assets/snapshots/greek/athena.jpg" alt="Athena Strategic Template" style="filter: blur(1px); opacity: 0.7; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" width="300" />
 
 *Showcase strategic thinking with this sophisticated design for consultants and analysts.*
+
+</div>
+
+<div>
 
 #### Apollo Creative
 <img src="src/assets/snapshots/greek/apollo.jpg" alt="Apollo Creative Template" style="filter: blur(1px); opacity: 0.7; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" width="300" />
 
 *Illuminate creative talents with this inspiring template for artists and designers.*
 
+</div>
+
+<div>
+
 #### Artemis Focused
 <img src="src/assets/snapshots/greek/artemis.jpg" alt="Artemis Focused Template" style="filter: blur(1px); opacity: 0.7; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" width="300" />
 
 *Sharp, precise, goal-oriented design for accuracy-focused professionals.*
+
+</div>
+
+<div>
 
 #### Hermes Dynamic
 <img src="src/assets/snapshots/greek/hermes.jpg" alt="Hermes Dynamic Template" style="filter: blur(1px); opacity: 0.7; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" width="300" />
 
 *Fast-paced template for sales professionals and dynamic business leaders.*
 
+</div>
+
+<div>
+
 #### Hera Elegant
 <img src="src/assets/snapshots/greek/hera.jpg" alt="Hera Elegant Template" style="filter: blur(1px); opacity: 0.7; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" width="300" />
 
 *Sophisticated elegance for senior management and executive positions.*
+
+</div>
 
 </div>
 
