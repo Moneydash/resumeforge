@@ -159,7 +159,7 @@ const Login: React.FC = () => {
         {/* Footer */}
         <div className="text-center mt-6">
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            By signing in, you agree to our Terms of Service and Privacy Policy
+            By signing in, you agree to our <a href="/terms-of-service" className="underline">Terms of Service</a> and <a href="/privacy-policy" className="underline">Privacy Policy</a>
           </p>
         </div>
       </div>

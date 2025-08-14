@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Plus, FileText, Edit, Grid3X3, List, Trash2, CalendarDays, NotepadTextDashed, FilePlus2, FilePenLine, SquareX, Copy, LayoutDashboard, ScanText, Menu, X } from 'lucide-react';
+import { Plus, FileText, Edit, Grid3X3, List, Trash2, CalendarDays, NotepadTextDashed, FilePlus2, FilePenLine, Copy, LayoutDashboard, Menu, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import client from '@/api/axiosInstance';
@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import type { ResumeSummary } from "@/types";
 import { useDashboardStore } from '@/store/useDashboardStore';
 import { useMainStore } from '@/store/useMainStore';
-import { formatDateDisplay, getCsrfToken } from '@/utils/helper';
+import { formatDateDisplay, formatTemplateName, getCsrfToken, slugify } from '@/utils/helper';
 import { toast } from 'sonner';
 import ThemeToggle from '@/components/ThemeToggle';
 
@@ -95,6 +95,7 @@ const Dashboard: React.FC = () => {
   };
 
   useEffect(() => {
+    toast.dismiss(); // dismiss all toast upon loading
     setUserId(Cookies.get('user.id') || '');
     localStorage.clear();
   }, []);
@@ -142,6 +143,7 @@ const Dashboard: React.FC = () => {
   // Edit a resume (navigate to resume preview)
   const handleEditResume = (resume: ResumeSummary) => {
     if (!resume.template) {
+      localStorage.removeItem('resumes');
       toast.loading('Redirecting to templates...');
       localStorage.setItem('slug', resume.resume_slug_name);
       setTimeout(() => {
@@ -149,11 +151,14 @@ const Dashboard: React.FC = () => {
         navigate(`/templates?resumeId=${resume.id}`);
       }, 1500);
     } else {
+      toast.loading("Redirecting to Resume Preview");
       localStorage.setItem('id', resume.id);
       localStorage.setItem('template', resume.template);
       localStorage.setItem('slug', resume.resume_slug_name);
       localStorage.removeItem('resumes');
-      navigate(`/preview?template=${resume.template}&resumeId=${resume.id}`);
+      setTimeout(() => {
+        navigate(`/preview?template=${resume.template}&resumeId=${resume.id}`);
+      }, 1500);
     }
   };
 
@@ -183,13 +188,8 @@ const Dashboard: React.FC = () => {
 
   const handleSlugChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    // Replace spaces and special characters with hyphens, except underscores
-    const slug = value.replace(/[^a-zA-Z0-9_]/g, '-').toLowerCase();
+    const slug = slugify(value);
     setResumeSlug(slug);
-  };
-
-  const formatTemplateName = (template: string) => {
-    return template.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
   };
 
   return (
@@ -228,7 +228,11 @@ const Dashboard: React.FC = () => {
         open={createDialogOpen}
         onOpenChange={(open) => {
           setCreateDialogOpen(open);
-          if (!open) setEditIndex(false);
+          if (!open) {
+            setResumeName('');
+            setResumeSlug('');
+            setEditIndex(false);
+          }
         }}
       >
         <DialogContent>
@@ -307,20 +311,25 @@ const Dashboard: React.FC = () => {
             </Button>
             {/* Cover Letter Maker Button */}
             <Button
-              onClick={() => { }}
+              onClick={() => {
+                toast.loading("Redirecting to Cover Letter Dashboard");
+                setTimeout(() => {
+                  navigate('/cl-dashboard');
+                }, 1500);
+              }}
               className="inline-flex items-center gap-3 px-6 py-3 bg-white dark:bg-green-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white font-semibold rounded-lg shadow hover:shadow-lg hover:bg-gray-50 dark:hover:bg-green-600 transition-all duration-200"
             >
               <LayoutDashboard className="w-5 h-5" />
               Cover Letter Dashboard
             </Button>
-            {/* ATS Scanner Button */}
-            <Button
+            {/* ATS Scanner Button - commented, planning to add later */}
+            {/* <Button
               onClick={() => { }}
               className="inline-flex items-center gap-3 px-6 py-3 bg-white dark:bg-yellow-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white font-semibold rounded-lg shadow hover:shadow-lg hover:bg-gray-50 dark:hover:bg-yellow-600 transition-all duration-200"
             >
               <ScanText className="w-5 h-5" />
               ATS Scanner
-            </Button>
+            </Button> */}
           </div>
 
           {/* Mobile Hamburger Menu - Visible on small screens */}
@@ -394,7 +403,10 @@ const Dashboard: React.FC = () => {
 
                     <Button
                       onClick={() => {
-                        setMobileMenuOpen(false);
+                        toast.loading("Redirecting to Cover Letter Dashboard");
+                        setTimeout(() => {
+                          navigate('/cl-dashboard');
+                        }, 1500);
                       }}
                       className="w-full justify-start gap-3 bg-green-700 border border-gray-600 text-white hover:bg-green-600"
                     >
@@ -402,7 +414,7 @@ const Dashboard: React.FC = () => {
                       Cover Letter Dashboard
                     </Button>
 
-                    <Button
+                    {/* <Button
                       onClick={() => {
                         setMobileMenuOpen(false);
                       }}
@@ -410,7 +422,7 @@ const Dashboard: React.FC = () => {
                     >
                       <ScanText className="w-4 h-4" />
                       ATS Scanner
-                    </Button>
+                    </Button> */}
                   </div>
                 </div>
               </div>
@@ -510,28 +522,48 @@ const Dashboard: React.FC = () => {
 
                     {/* Fallback for resumes without template or image */}
                     {(!resume.template || !getSnapshotImage(resume.template)) && (
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="p-3 bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl">
-                          <FileText className="w-6 h-6 text-blue-600" />
+                      <div className="relative h-48 mb-4 overflow-hidden rounded-xl">
+                        <div
+                          className="absolute inset-0 bg-cover bg-top bg-no-repeat transition-transform duration-500 group-hover:scale-110"
+                          style={{
+                            background: '#bababa',
+                          }}
+                        >
+                          {/* Subtle Overlay for Readability */}
+                          <div
+                            className="absolute inset-0"
+                            style={{
+                              background: `linear-gradient(180deg, 
+                                rgba(255,255,255,0.1) 0%, 
+                                rgba(255,255,255,0.05) 25%, 
+                                rgba(255,255,255,0.02) 50%, 
+                                rgba(255,255,255,0.1) 75%, 
+                                rgba(255,255,255,0.2) 100%)`,
+                              backdropFilter: 'blur(0.3px)',
+                            }}
+                          />
+
                         </div>
-                        <div className="flex flex-row gap-x-2">
+
+                        {/* Action Buttons Overlay - Outside scaling container */}
+                        <div className="absolute top-3 right-3 flex flex-row gap-x-1 z-10">
                           <button
                             onClick={() => handleClone(resume.id)}
-                            className="opacity-0 group-hover:opacity-100 p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                            className="opacity-0 group-hover:opacity-100 p-2 bg-white/90 backdrop-blur-sm text-gray-600 hover:text-blue-500 hover:bg-white rounded-lg transition-all duration-200 shadow-sm"
                             title='Clone'
                           >
                             <Copy className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => handleRename(resume)}
-                            className="opacity-0 group-hover:opacity-100 p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                            className="opacity-0 group-hover:opacity-100 p-2 bg-white/90 backdrop-blur-sm text-gray-600 hover:text-blue-500 hover:bg-white rounded-lg transition-all duration-200 shadow-sm"
                             title='Rename'
                           >
                             <Edit className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => openDeleteDialog(resume.id)}
-                            className="opacity-0 group-hover:opacity-100 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-200"
+                            className="opacity-0 group-hover:opacity-100 p-2 bg-white/90 backdrop-blur-sm text-gray-600 hover:text-red-500 hover:bg-white rounded-lg transition-all duration-200 shadow-sm"
                             title='Delete'
                           >
                             <Trash2 className="w-4 h-4" />

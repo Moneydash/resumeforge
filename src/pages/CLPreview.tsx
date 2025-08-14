@@ -1,30 +1,18 @@
-// Resume Preview
 import React, { useEffect, useRef, useState } from 'react';
-import { saveAs } from 'file-saver';
-import ResumeForm from '../components/ResumeForm';
+import CLForm from '../components/CLForm';
 import { useTheme } from '../contexts/ThemeContext';
-import type { ResumeFormData } from '@/types/interface.resume-form-data';
-import type { TemplateType } from '@/types';
+import type { CLFormData } from '@/types/interface.cl-form-data';
 import { useNavigate } from 'react-router-dom';
 import ThemeToggle from '../components/ThemeToggle';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { formRequest } from '@/api/request';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import {
   User,
   FileText,
-  Share2,
-  Briefcase,
-  GraduationCap,
-  Code,
-  Languages,
-  Heart,
-  FolderOpen,
-  Trophy,
-  Award,
-  Users,
+  Building2,
+  MessageSquare,
   FileIcon,
   Eye,
   Loader2,
@@ -32,18 +20,20 @@ import {
   GripVertical,
   MoveLeft
 } from 'lucide-react';
+import type { CLTemplateType } from '@/types';
 import { renderToString } from 'react-dom/server';
-
-import ResumePreview from '@/components/TemplateComponent';
-import { getCsrfToken, pdfPayload } from '@/utils/helper';
+import { getCsrfToken, pdfPayloadv2 } from '@/utils/helper';
+import CLTemplateComponent from '@/components/CoverLetterTemplateComponent';
+import { formRequest } from '@/api/request';
+import { saveAs } from 'file-saver';
 import client from '@/api/axiosInstance';
 import Cookies from 'js-cookie';
 import { useMainStore } from '@/store/useMainStore';
 
-const Preview: React.FC = () => {
+const CLPreview: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [loadingExport, setLoadingExport] = useState(false);
-  const [resumeLoading, setResumeLoading] = useState(true);
+  const [clLoading, setCLLoading] = useState(false);
   const { isDarkMode } = useTheme();
   const navigate = useNavigate();
 
@@ -53,55 +43,46 @@ const Preview: React.FC = () => {
   const [isResizing, setIsResizing] = useState(false);
   const sidebarMin = 280;
   const sidebarMax = 650;
-  const resumeId = localStorage.getItem('id');
+  const clId = localStorage.getItem('cl-id');
 
-  // zustand store
+  // get the selected template and validate it
+  const templateParam = localStorage.getItem("cl-template") || 'aether';
+  const validTemplates: CLTemplateType[] = ['aether', 'terra', 'aqua', 'ignis', 'ventus'];
+  const template: CLTemplateType | undefined = templateParam && validTemplates.includes(templateParam as CLTemplateType)
+    ? templateParam as CLTemplateType
+    : undefined;
+
   const userId = useMainStore((state) => state.userId);
   const setUserId = useMainStore((state) => state.setUserId);
 
-  // get the selected template and validate it
-  const templateParam = localStorage.getItem("template") || 'cigar';
-  const validTemplates: TemplateType[] = ['cigar', 'andromeda', 'comet', 'milky_way', 'zeus', 'athena', 'apollo', 'artemis', 'hermes', 'hera'];
-  const template: TemplateType | undefined = templateParam && validTemplates.includes(templateParam as TemplateType)
-    ? templateParam as TemplateType
-    : undefined;
-
-  // Properly typed initial state matching ResumeFormData interface
+  // Properly typed initial state matching CLFormData interface
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
-  const [resumeData, setResumeData] = useState<ResumeFormData>({
-    personal: {
+  const [clData, setCLData] = useState<CLFormData>({
+    sender: {
       name: '',
-      headline: '',
       email: '',
-      website: { name: '', link: '' },
+      phone: '',
+      address: '',
       location: '',
-      contact_number: ''
+      linkedin: '',
+      job_title: ''
     },
-    summary: '',
-    socials: [],
-    experience: [],
-    education: [],
-    skills: [],
-    languages: [],
-    awards: [],
-    certifications: [],
-    interests: [],
-    projects: [],
-    references: []
+    recipient: {
+      name: '',
+      title: '',
+      company: '',
+      address: ''
+    },
+    content: {
+      introduction: '',
+      body: '',
+      closing: ''
+    }
   });
 
-  const personalRef = useRef<HTMLDivElement>(null!);
-  const summaryRef = useRef<HTMLDivElement>(null!);
-  const socialsRef = useRef<HTMLDivElement>(null!);
-  const experienceRef = useRef<HTMLDivElement>(null!);
-  const educationRef = useRef<HTMLDivElement>(null!);
-  const skillsRef = useRef<HTMLDivElement>(null!);
-  const languagesRef = useRef<HTMLDivElement>(null!);
-  const interestsRef = useRef<HTMLDivElement>(null!);
-  const projectsRef = useRef<HTMLDivElement>(null!);
-  const awardsRef = useRef<HTMLDivElement>(null!);
-  const certificationsRef = useRef<HTMLDivElement>(null!);
-  const referencesRef = useRef<HTMLDivElement>(null!);
+  const senderRef = useRef<HTMLDivElement>(null!);
+  const recipientRef = useRef<HTMLDivElement>(null!);
+  const contentRef = useRef<HTMLDivElement>(null!);
 
   // Create a ref for the form container
   const formContainerRef = useRef<HTMLDivElement>(null);
@@ -112,18 +93,9 @@ const Preview: React.FC = () => {
     label: string;
     ref: React.RefObject<HTMLDivElement>;
   }> = [
-      { icon: User, label: 'Personal Details', ref: personalRef },
-      { icon: FileText, label: 'Summary', ref: summaryRef },
-      { icon: Share2, label: 'Social Links', ref: socialsRef },
-      { icon: Briefcase, label: 'Experience', ref: experienceRef },
-      { icon: GraduationCap, label: 'Education', ref: educationRef },
-      { icon: Code, label: 'Skills', ref: skillsRef },
-      { icon: Languages, label: 'Languages', ref: languagesRef },
-      { icon: Heart, label: 'Interests', ref: interestsRef },
-      { icon: FolderOpen, label: 'Projects', ref: projectsRef },
-      { icon: Trophy, label: 'Awards', ref: awardsRef },
-      { icon: Award, label: 'Certifications', ref: certificationsRef },
-      { icon: Users, label: 'References', ref: referencesRef },
+      { icon: User, label: 'Sender Information', ref: senderRef },
+      { icon: Building2, label: 'Recipient Details', ref: recipientRef },
+      { icon: MessageSquare, label: 'Letter Content', ref: contentRef },
     ];
 
   const startResize = (e: React.MouseEvent | React.TouchEvent) => {
@@ -133,41 +105,44 @@ const Preview: React.FC = () => {
     document.body.style.userSelect = 'none'; // Prevent text selection during resize
   };
 
-  const fetchResumeData = async () => {
-    setResumeLoading(true);
-    const resume_id = localStorage.getItem('id'); // resume id
-    if (resume_id) {
-      const request = await client.get(`/resume/fetch-data/${resume_id}/${userId}`);
-      localStorage.setItem('resumeFormData', request.data?.resume_data);
-      if (request.data?.resume_data) {
+  // Fetch cover letter data on component mount
+  const fetchCLData = async () => {
+    setCLLoading(true);
+    const coverLetterId = localStorage.getItem('cl-id');
+    try {
+      const request = await client.get(`/cover-letter/fetch-data/${coverLetterId}/${userId}`)
+      localStorage.setItem('clFormData', request.data?.cover_letter_data);
+      if (request.data?.cover_letter_data) {
         try {
-          const parsedData = JSON.parse(request.data.resume_data);
-          setResumeData(parsedData);
-          handleFormSubmit(parsedData); // Use parsedData directly!
+          const parsedData = JSON.parse(request.data?.cover_letter_data);
+          setCLData(parsedData);
+          handleFormSubmit(parsedData);
         } catch (e) {
-          // fallback if not JSON
-          setResumeData(request.data.resume_data);
-          handleFormSubmit(request.data.resume_data); // Use the fallback data directly!
+          setCLData(request.data?.cover_letter_data);
+          handleFormSubmit(request.data?.cover_letter_data);
         }
       }
+    } catch (error) {
+      console.error('Error fetching cover letter data:', error);
+      toast.error('Failed to load cover letter data');
+    } finally {
+      setCLLoading(false);
     }
-    setResumeLoading(false);
   };
 
-  // set the first effect to get the user id
   useEffect(() => {
     toast.dismiss();
     setUserId(Cookies.get('user.id') || '');
-  }, []);
+  });
 
   useEffect(() => {
     getCsrfToken();
-    if (userId && resumeId) {
-      fetchResumeData();
+    if (clId && userId) {
+      fetchCLData();
     } else {
-      navigate('/dashboard');
+      navigate('/cl-dashboard');
     }
-  }, [userId]);
+  }, [clId]);
 
   // Fixed resize effect with better event handling
   useEffect(() => {
@@ -230,23 +205,26 @@ const Preview: React.FC = () => {
     }
   };
 
-  const saveResumeData = async (data: ResumeFormData) => {
+  // Save cover letter data
+  const saveCLData = async (data: CLFormData) => {
     try {
-      await client.post('/resume/save-data', {
-        resumeData: data,
-        id: localStorage.getItem('id') || null,
-        template: template,
+      await client.post(`/cover-letter/save-data`, {
+        clData: data,
+        id: localStorage.getItem('cl-id') || null,
         userId: Cookies.get('user.id'),
+        template: template,
       });
+      localStorage.setItem('clFormData', JSON.stringify(data));
+      setCLData(data);
     } catch (error) {
-      console.error('Failed saving resume data: ', error);
-      throw error;
+      console.error('Error saving cover letter data:', error);
+      toast.error('Failed to save cover letter data');
     }
   };
 
-  const saveResumeExports = async () => {
+  const saveCLExports = async () => {
     try {
-      await client.post(`/resume/save-exports/${resumeId}/${userId}`, {
+      await client.post(`/cover-letter/save-exports/${clId}/${userId}`, {
         template: template,
       });
     } catch (error) {
@@ -255,72 +233,78 @@ const Preview: React.FC = () => {
     }
   }
 
-  const handleFormSubmit = async (data: ResumeFormData) => {
+  // Handle form submission
+  const handleFormSubmit = async (data: CLFormData) => {
     setLoading(true);
     try {
-      setResumeData(data);
-      await saveResumeData(data);
-      const htmlContent = renderToString(<ResumePreview data={data} template={template} />);
-      const payload = pdfPayload(data, htmlContent, template || 'andromeda');
+      setCLData(data);
+      await saveCLData(data);
 
-      const requestData = await formRequest("POST", `/resume/generate`, payload);
+      const htmlContent = renderToString(<CLTemplateComponent data={data} template={template} />);
+      const payload = pdfPayloadv2(data, htmlContent, template || 'aether');
+
+      const requestData = await formRequest("POST", `/cover-letter/generate-cl`, payload);
       const blob = new Blob([requestData?.data], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
       setPdfUrl(url);
+
     } catch (error) {
-      console.error("Error: ", error);
+      console.error('Error generating cover letter:', error);
+      toast.error('Failed to generate cover letter');
     } finally {
       setLoading(false);
     }
-  }
+  };
 
-  // Generate a proper PDF with selectable text and clickable links
-  const handleExportPDF = async (data: ResumeFormData) => {
+  // Handle PDF export
+  const handleExportPDF = async (data: CLFormData) => {
     setLoadingExport(true);
-    const toastExport = toast.loading("Exporting your resume into PDF");
+    const toastExport = toast.loading("Exporting your cover letter into PDF");
     try {
-      await saveResumeExports();
-      const htmlContent = renderToString(<ResumePreview data={data} template={template} />)
-      const payload = pdfPayload(data, htmlContent, template || 'andromeda')
+      await saveCLExports();
+      const htmlContent = renderToString(<CLTemplateComponent data={data} template={template} />);
+      const payload = pdfPayloadv2(data, htmlContent, template || 'aether');
 
-      const requestData = await formRequest("POST", `/resume/generate`, payload);
-      // Convert the binary PDF data to a blob and trigger download
+      const requestData = await formRequest("POST", `/cover-letter/generate-cl`, payload);
       const blob = new Blob([requestData?.data], { type: 'application/pdf' });
-      const fileName = localStorage.getItem('slug') || `${data.personal.name.toLowerCase().replace(/\s+/g, '-')}-resume`;
+      const fileName = localStorage.getItem('slug') || `${data.sender.name.toLowerCase().replace(/\s+/g, '-')}-cover-letter`;
       const file = `${fileName}.pdf`;
       saveAs(blob, file);
       toast.dismiss(toastExport);
       toast.success('PDF downloaded successfully!');
+
     } catch (error) {
-      console.error("Error: ", error);
+      console.error('Error exporting PDF:', error);
+      toast.error('Failed to export PDF');
     } finally {
       setLoadingExport(false);
     }
   };
 
+  // Navigation functions
   const redirectTemplates = () => {
     const toastId = toast.loading("Redirecting to Templates page...");
     setTimeout(() => {
       toast.dismiss(toastId);
-      navigate("/templates");
+      navigate("/cl-templates");
     }, 1600);
   };
 
-  const redirectResumes = () => {
-    const toastId = toast.loading("Redirecting to Resume Dashboards...");
+  const redirectDashboard = () => {
+    const toastId = toast.loading("Redirecting to Cover Letter Dashboard...");
     setTimeout(() => {
       toast.dismiss(toastId);
       localStorage.clear();
-      navigate("/dashboard");
+      navigate("/cl-dashboard");
     }, 1600);
-  }
+  };
 
   return (
-    resumeLoading ? (
+    clLoading ? (
       <div className="h-screen w-full flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
         <div className="flex flex-col items-center">
           <Loader2 className="w-10 h-10 animate-spin text-blue-600 dark:text-blue-400 mb-4" />
-          <span className="text-lg font-semibold text-gray-700 dark:text-gray-200">Loading your resume...</span>
+          <span className="text-lg font-semibold text-gray-700 dark:text-gray-200">Loading your cover letter...</span>
         </div>
       </div>
     ) : (
@@ -400,7 +384,7 @@ const Preview: React.FC = () => {
                     } 
                     bg-clip-text text-transparent
                   `}>
-                    ResumeForge
+                    CoverCraft
                   </h1>
                 </div>
 
@@ -423,7 +407,7 @@ const Preview: React.FC = () => {
                   : 'bg-blue-50 text-blue-600 border border-blue-200'
                 }
               `}>
-                Template: {(template || 'andromeda').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
+                Template: {(template || 'aether').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
               </div>
             </div>
 
@@ -433,23 +417,13 @@ const Preview: React.FC = () => {
               className="flex-1 overflow-y-auto px-6 py-4 scroll-smooth no-scrollbar"
               style={{ scrollBehavior: 'smooth' }}
             >
-              <ResumeForm
+              <CLForm
                 onSubmit={handleFormSubmit}
                 loading={loading}
-                template={template}
                 sectionRefs={{
-                  personalRef,
-                  summaryRef,
-                  socialsRef,
-                  experienceRef,
-                  educationRef,
-                  skillsRef,
-                  languagesRef,
-                  interestsRef,
-                  projectsRef,
-                  awardsRef,
-                  certificationsRef,
-                  referencesRef,
+                  senderRef,
+                  recipientRef,
+                  contentRef,
                 }}
               />
             </div>
@@ -501,7 +475,7 @@ const Preview: React.FC = () => {
                     } 
                     bg-clip-text text-transparent
                   `}>
-                    Resume Preview
+                    Cover Letter Preview
                   </h2>
                 </div>
 
@@ -523,7 +497,7 @@ const Preview: React.FC = () => {
 
                   <Button
                     variant="outline"
-                    onClick={redirectResumes}
+                    onClick={redirectDashboard}
                     className={`
                       ${isDarkMode
                         ? 'border-gray-600 hover:bg-gray-700 text-gray-300 hover:text-white'
@@ -538,7 +512,7 @@ const Preview: React.FC = () => {
 
                   <Button
                     id="exportButton"
-                    onClick={() => handleExportPDF(resumeData)}
+                    onClick={() => handleExportPDF(clData)}
                     disabled={loadingExport || !pdfUrl}
                     className={`
                       ${isDarkMode
@@ -579,9 +553,9 @@ const Preview: React.FC = () => {
                   transition-all duration-200
                 `}>
                   <Loader2 className="w-10 h-10 animate-spin mb-4" />
-                  <p className="text-lg font-medium mb-2">Generating your PDF preview...</p>
+                  <p className="text-lg font-medium mb-2">Generating your cover letter preview...</p>
                   <p className="text-sm text-center max-w-md">
-                    Please wait while we generate your resume preview.
+                    Please wait while we generate your cover letter preview.
                   </p>
                 </div>
               ) : pdfUrl ? (
@@ -593,7 +567,7 @@ const Preview: React.FC = () => {
                   <iframe
                     src={`${pdfUrl}#sidebar=0&zoom=100&toolbar=0`}
                     className="w-full h-full border-none rounded-xl"
-                    title="Resume Preview"
+                    title="Cover Letter Preview"
                   />
                 </div>
               ) : (
@@ -614,9 +588,9 @@ const Preview: React.FC = () => {
                   `}>
                     <FileIcon className="w-8 h-8" />
                   </div>
-                  <p className="text-lg font-medium mb-2">No PDF generated yet</p>
+                  <p className="text-lg font-medium mb-2">No cover letter generated yet</p>
                   <p className="text-sm text-center max-w-md">
-                    Please complete and submit the form to generate your resume preview
+                    Please complete and submit the form to generate your cover letter preview
                   </p>
                 </div>
               )}
@@ -628,4 +602,4 @@ const Preview: React.FC = () => {
   );
 };
 
-export default Preview;
+export default CLPreview;

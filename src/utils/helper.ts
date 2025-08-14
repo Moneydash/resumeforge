@@ -1,5 +1,6 @@
 import client from "@/api/axiosInstance";
-import type { TemplateType } from "@/types";
+import type { CLTemplateType, TemplateType } from "@/types";
+import React from "react";
 
 // Function to format dates from YYYY-MM to Month YYYY format
 export const formatDate = (dateString: string): string => {
@@ -49,7 +50,7 @@ export const stringToArray = (value: any): string[] => {
   return [];
 };
 
-export const pdfPayload = (data: object, htmlContent: string, template: TemplateType) => {
+export const pdfPayload = (data: object, htmlContent: string, template: TemplateType | CLTemplateType) => {
   const fullHtml = `
     <html lang="en">
     <head>
@@ -66,6 +67,16 @@ export const pdfPayload = (data: object, htmlContent: string, template: Template
 
   const payload = {
     html: fullHtml,
+    data: data,
+    template: template
+  }
+
+  return payload;
+};
+
+export const pdfPayloadv2 = (data: object, htmlContent: string, template: TemplateType | CLTemplateType) => {
+  const payload = {
+    html: htmlContent,
     data: data,
     template: template
   }
@@ -92,4 +103,26 @@ export const formatDateDisplay = (dateString: string) => {
     hour: '2-digit',
     minute: '2-digit'
   });
+};
+
+export const formatText = (text: string): React.ReactNode[] => {
+  const lines = text.split('\n');
+  return lines.map((line, index) =>
+    React.createElement(
+      React.Fragment,
+      { key: index },
+      line,
+      index < lines.length - 1 ? React.createElement('br') : null
+    )
+  );
+};
+
+export const formatTemplateName = (template: string) => {
+  return template.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+};
+
+export const slugify = (value: string) => {
+  return value
+    .replace(/[^a-zA-Z0-9_]+(?=[a-zA-Z0-9])/g, '-')
+    .toLowerCase();
 };

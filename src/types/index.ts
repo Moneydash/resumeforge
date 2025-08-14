@@ -16,6 +16,7 @@
  *   Includes reusable, minimal interfaces grouped by their shared purpose.
  */
 
+import type { CLFormData } from "./interface.cl-form-data";
 import type { ResumeFormData } from "./interface.resume-form-data";
 
 export interface TemplateProps {
@@ -30,7 +31,7 @@ export interface Template {
   features: string[];
   category: string;
   color: string;
-  theme: 'galaxy' | 'greek';
+  theme: 'galaxy' | 'greek' | 'elements';
   icon?: string;
   available: boolean;
 }
@@ -54,3 +55,13 @@ export interface ResumeSummary {
   template: string;
   updated_at: string;
 };
+
+export interface CLTemplateProps {
+  data: CLFormData;
+};
+
+export type CLTemplateType = 'aether'
+  | 'terra'
+  | 'aqua'
+  | 'ignis'
+  | 'ventus'

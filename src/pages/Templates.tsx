@@ -67,15 +67,6 @@ const Templates: React.FC = () => {
     }, 1500);
   };
 
-  const handleCreateNew = () => {
-    const zeusToast = toast.loading("Starting with our most popular template!");
-    setTimeout(() => {
-      toast.dismiss(zeusToast);
-      localStorage.setItem("template", "zeus");
-      navigate("/preview?template=zeus");
-    }, 2000);
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
       {/* Enhanced Hero Section */}

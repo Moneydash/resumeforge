@@ -17,7 +17,24 @@ import Strike from '@tiptap/extension-strike';
 import History from '@tiptap/extension-history';
 import Highlight from '@tiptap/extension-highlight';
 import HardBreak from '@tiptap/extension-hard-break';
-import { AlignCenter, AlignJustify, AlignLeft, AlignRight, BoldIcon, Heading1Icon, Heading2Icon, Heading3Icon, Highlighter, ItalicIcon, ListIcon, ListOrderedIcon, Redo2Icon, StrikethroughIcon, UnderlineIcon, Undo2Icon, WrapTextIcon } from 'lucide-react';
+import {
+  AlignCenter,
+  AlignJustify,
+  AlignLeft,
+  AlignRight,
+  BoldIcon,
+  Heading1Icon,
+  Heading2Icon,
+  Heading3Icon,
+  ItalicIcon,
+  ListIcon,
+  ListOrderedIcon,
+  Redo2Icon,
+  StrikethroughIcon,
+  UnderlineIcon,
+  Undo2Icon,
+  WrapTextIcon,
+} from 'lucide-react';
 import { Toggle } from './ui/toggle';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
@@ -114,12 +131,6 @@ const EditorComponent: React.FC<editorInterface> = ({ value, setValue }) => {
       onClick: () => editor?.chain().focus().toggleStrike().run(),
       pressed: editor?.isActive('strike'),
       tooltip: 'Strikethrough'
-    },
-    {
-      icon: <Highlighter />,
-      onClick: () => editor?.chain().focus().toggleHighlight().run(),
-      pressed: editor.isActive('highlight'),
-      tooltip: 'Highlight'
     },
     {
       icon: <ListIcon />,

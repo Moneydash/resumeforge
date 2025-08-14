@@ -34,6 +34,16 @@ client.interceptors.response.use(
       return Promise.reject(new Error('Request timeout. Please check your internet connection.'));
     }
 
+    // if (error.response.status === 401 || error.response.status === 403 || error.response.status === 404) {
+    //   console.error('Unauthorized:', error);
+    //   const cookiesToRemove = ['connect.sid', 'user.id', 'user.email', 'XSRF-TOKEN'];
+
+    //   // Remove all specified cookies
+    //   cookiesToRemove.forEach(cookie => Cookies.remove(cookie));
+    //   window.location.href = '/login';
+    //   return Promise.reject(new Error('Unauthorized. Please check your credentials and try again.'));
+    // }
+
     if (!error.response) {
       console.error('Network Error Details:', {
         message: error.message,
