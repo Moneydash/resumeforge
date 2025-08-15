@@ -40,7 +40,6 @@ const CLForm: React.FC<CLFormProps> = ({ onSubmit, loading = false, onChange, se
         email: '',
         phone: '',
         address: '',
-        website: { name: '', link: '' },
         location: '',
         linkedin: '',
         job_title: ''
